@@ -81,13 +81,14 @@
 </li>
 <li><a href="#sec-Architecture-and-Implementation"><span class="spec-secid">5</span>Architecture and Implementation</a><ol>
 <li><a href="#sec-Core-Components"><span class="spec-secid">5.1</span>Core Components</a></li>
-<li><a href="#sec-Inbox-Pruning-and-Retention-Policies"><span class="spec-secid">5.2</span>Inbox Pruning and Retention Policies</a></li>
-<li><a href="#sec-Scalability"><span class="spec-secid">5.3</span>Scalability</a></li>
-<li><a href="#sec-Inbox-Lag-Management"><span class="spec-secid">5.4</span>Inbox Lag Management</a><ol>
-<li><a href="#sec-Lag-Detection"><span class="spec-secid">5.4.1</span>Lag Detection</a></li>
-<li><a href="#sec-Warning-Thresholds"><span class="spec-secid">5.4.2</span>Warning Thresholds</a></li>
-<li><a href="#sec-Eviction-and-Retention-Enforcement"><span class="spec-secid">5.4.3</span>Eviction and Retention Enforcement</a></li>
-<li><a href="#sec-Consumer-Best-Practices"><span class="spec-secid">5.4.4</span>Consumer Best Practices</a></li>
+<li><a href="#sec-Cost-Analysis"><span class="spec-secid">5.2</span>Cost Analysis</a></li>
+<li><a href="#sec-Inbox-Pruning-and-Retention-Policies"><span class="spec-secid">5.3</span>Inbox Pruning and Retention Policies</a></li>
+<li><a href="#sec-Scalability"><span class="spec-secid">5.4</span>Scalability</a></li>
+<li><a href="#sec-Inbox-Lag-Management"><span class="spec-secid">5.5</span>Inbox Lag Management</a><ol>
+<li><a href="#sec-Lag-Detection"><span class="spec-secid">5.5.1</span>Lag Detection</a></li>
+<li><a href="#sec-Warning-Thresholds"><span class="spec-secid">5.5.2</span>Warning Thresholds</a></li>
+<li><a href="#sec-Eviction-and-Retention-Enforcement"><span class="spec-secid">5.5.3</span>Eviction and Retention Enforcement</a></li>
+<li><a href="#sec-Consumer-Best-Practices"><span class="spec-secid">5.5.4</span>Consumer Best Practices</a></li>
 </ol>
 </li>
 </ol>
@@ -438,8 +439,72 @@
 <li><strong>Cursor Tracker:</strong> A lightweight mechanism (e.g., a key-value store) to track the last acknowledged event ID per consumer, used for storage cleanup or analytics.</li>
 </ul>
 </section>
-<section id="sec-Inbox-Pruning-and-Retention-Policies" secid="5.2">
-<h2><span class="spec-secid" title="link to this section"><a href="#sec-Inbox-Pruning-and-Retention-Policies">5.2</a></span>Inbox Pruning and Retention Policies</h2>
+<section id="sec-Cost-Analysis" secid="5.2">
+<h2><span class="spec-secid" title="link to this section"><a href="#sec-Cost-Analysis">5.2</a></span>Cost Analysis</h2>
+<p>At large scale, the cost of durable inbox storage becomes significant. Here we analyze storage costs assuming 10 billion events per day routed to partner apps.</p>
+<section id="sec-Cost-Analysis.Assumptions-" class="subsec">
+<h6><a href="#sec-Cost-Analysis.Assumptions-" title="link to this subsection">Assumptions:</a></h6>
+<ul>
+<li>10 billion events/day, each <strong>5 KB</strong></li>
+<li>All events are broadcast to 50,000 inboxes (i.e. full fan-out)</li>
+<li>Retention window: 3 days (rolling durability)</li>
+<li>Storage tier: AWS S3 Standard ($0.023/GB/month)</li>
+<li>Cursor tracking via DynamoDB ($0.25/GB/month)</li>
+<li>Optional cold archival to AWS Glacier ($0.004/GB/month)</li>
+<li>Per-day data volume: 10B events × 5 KB = <strong>50 TB/day</strong></li>
+<li>3-day retention (shared storage): 50 TB × 3 = <strong>150 TB total</strong></li>
+<li>Metadata overhead: estimated at ~50% of content volume = <strong>75 TB</strong></li>
+</ul>
+</section>
+<section id="sec-Cost-Analysis.Monthly-Costs-" class="subsec">
+<h6><a href="#sec-Cost-Analysis.Monthly-Costs-" title="link to this subsection">Monthly Costs:</a></h6>
+<table>
+<thead>
+<tr>
+<th>Component</th>
+<th>Volume</th>
+<th>Rate</th>
+<th>Monthly Cost</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Event log (S3)</strong></td>
+<td>150 TB</td>
+<td>$0.023/GB</td>
+<td><strong>$3,450</strong></td>
+</tr>
+<tr>
+<td><strong>Metadata (EBS or S3)</strong></td>
+<td>75 TB</td>
+<td>$0.023&ndash;$0.10/GB</td>
+<td><strong>$1,725&ndash;$7,500</strong></td>
+</tr>
+<tr>
+<td><strong>Cursor tracking (DynamoDB)</strong></td>
+<td>~1 GB</td>
+<td>$0.25/GB</td>
+<td><strong>$0.25</strong></td>
+</tr>
+<tr>
+<td><strong>Cold archive (10%)</strong></td>
+<td>15 TB</td>
+<td>$0.004/GB</td>
+<td><strong>$60</strong></td>
+</tr>
+<tr>
+<td><strong>Total</strong></td>
+<td>&mdash;</td>
+<td>&mdash;</td>
+<td><strong>~$5,200&ndash;$11,000/month</strong></td>
+</tr>
+</tbody>
+</table>
+<p>Even under a high-throughput of <strong>10 billion events/day</strong> with <strong>5 KB payloads</strong>, a well-architected LATCH system using <strong>shared storage and indexed inboxes</strong> achieves total monthly costs of <strong>~$5,000&ndash;$11,000</strong>. This centralized infrastructure delivers durable, replayable, and observable delivery to 50,000 consumers&mdash;at a fraction of the cost incurred by individual webhook implementations failing independently.</p>
+</section>
+</section>
+<section id="sec-Inbox-Pruning-and-Retention-Policies" secid="5.3">
+<h2><span class="spec-secid" title="link to this section"><a href="#sec-Inbox-Pruning-and-Retention-Policies">5.3</a></span>Inbox Pruning and Retention Policies</h2>
 <p>LATCH requires producers to retain events in each inbox until they are acknowledged by the consumer. This guarantees that events are durably available in the face of consumer failures, network partitions, or slow polling intervals. However, indefinite retention is not feasible or desirable, particularly in high-throughput systems or when working with constrained storage.</p>
 <p>Producers MUST implement a retention policy for pruning old or unacknowledged events. The policy should define how long events are kept in an inbox and under what conditions they may be deleted. Implementations MAY support any of the following strategies:</p>
 <ul>
@@ -452,15 +517,15 @@
 <p>If a consumer attempts to resume from a cursor that no longer exists due to pruning, the server MUST return an error (e.g., <code>410 Gone</code>) indicating that the cursor is no longer valid.</p>
 <p>Producers MAY expose metadata such as retention windows, cursor expiration hints, or inbox backlog size to help consumers adapt their polling behavior dynamically.</p>
 </section>
-<section id="sec-Scalability" secid="5.3">
-<h2><span class="spec-secid" title="link to this section"><a href="#sec-Scalability">5.3</a></span>Scalability</h2>
+<section id="sec-Scalability" secid="5.4">
+<h2><span class="spec-secid" title="link to this section"><a href="#sec-Scalability">5.4</a></span>Scalability</h2>
 <p>LATCH is horizontally scalable by design. With each inbox is scoped to a specific consumer, reads can be independently sharded across nodes using the <code>consumer_id</code>, and writes can be isolated to dedicated partitions per inbox. Cursor tracking is entirely local to each consumer and requires no global coordination.</p>
 </section>
-<section id="sec-Inbox-Lag-Management" secid="5.4">
-<h2><span class="spec-secid" title="link to this section"><a href="#sec-Inbox-Lag-Management">5.4</a></span>Inbox Lag Management</h2>
+<section id="sec-Inbox-Lag-Management" secid="5.5">
+<h2><span class="spec-secid" title="link to this section"><a href="#sec-Inbox-Lag-Management">5.5</a></span>Inbox Lag Management</h2>
 <p>While LATCH enables consumer-paced delivery, this flexibility introduces the risk of consumers falling significantly behind, creating unbounded backlog growth, delayed processing, and potential retention violations. To maintain system health and fairness in multi-tenant environments, producers SHOULD implement policies for detecting and managing inbox lag.</p>
-<section id="sec-Lag-Detection" secid="5.4.1">
-<h3><span class="spec-secid" title="link to this section"><a href="#sec-Lag-Detection">5.4.1</a></span>Lag Detection</h3>
+<section id="sec-Lag-Detection" secid="5.5.1">
+<h3><span class="spec-secid" title="link to this section"><a href="#sec-Lag-Detection">5.5.1</a></span>Lag Detection</h3>
 <p>Lag can be measured using one or more of the following metrics:</p>
 <ul>
 <li><strong>Time lag</strong>: The duration between the oldest unacknowledged event and the current time.</li>
@@ -469,16 +534,16 @@
 </ul>
 <p>Producers MAY expose these metrics per consumer to observability systems, or return them as part of <code>/inboxes/{consumer_id}/events</code> or <code>/inbox-status</code> responses to aid client-side tuning.</p>
 </section>
-<section id="sec-Warning-Thresholds" secid="5.4.2">
-<h3><span class="spec-secid" title="link to this section"><a href="#sec-Warning-Thresholds">5.4.2</a></span>Warning Thresholds</h3>
+<section id="sec-Warning-Thresholds" secid="5.5.2">
+<h3><span class="spec-secid" title="link to this section"><a href="#sec-Warning-Thresholds">5.5.2</a></span>Warning Thresholds</h3>
 <p>Producers SHOULD define thresholds that trigger soft alerts or logs when lag metrics exceed predefined limits. For example, they may warn if a consumer has not acknowledged any events in 24 hours, if an inbox contains more than 10,000 unacknowledged events, or if disk usage for a single inbox exceeds 500 MB. These warnings help operators detect unresponsive or unhealthy consumers before they impact overall system performance or trigger retention enforcement mechanisms.</p>
 </section>
-<section id="sec-Eviction-and-Retention-Enforcement" secid="5.4.3">
-<h3><span class="spec-secid" title="link to this section"><a href="#sec-Eviction-and-Retention-Enforcement">5.4.3</a></span>Eviction and Retention Enforcement</h3>
+<section id="sec-Eviction-and-Retention-Enforcement" secid="5.5.3">
+<h3><span class="spec-secid" title="link to this section"><a href="#sec-Eviction-and-Retention-Enforcement">5.5.3</a></span>Eviction and Retention Enforcement</h3>
 <p>If a consumer persistently lags beyond acceptable thresholds, producers MAY take corrective action to preserve system stability and prevent unbounded resource usage. This can include selectively evicting events or enforcing retention boundaries. In such cases, producers may implement soft eviction, where events that exceed the configured retention window are pruned even if unacknowledged. If a consumer attempts to resume from a cursor that references evicted data, the server MUST return a 410 Gone response to indicate that the cursor is no longer valid. Producers SHOULD clearly document these behaviors and provide mechanisms to help consumers recover from eviction scenarios, such as cursor resets, full resynchronization options, or dedicated API endpoints for reinitializing inbox state. These recovery pathways are critical for minimizing disruption and ensuring that lagging consumers can safely resume processing without risking data inconsistency.</p>
 </section>
-<section id="sec-Consumer-Best-Practices" secid="5.4.4">
-<h3><span class="spec-secid" title="link to this section"><a href="#sec-Consumer-Best-Practices">5.4.4</a></span>Consumer Best Practices</h3>
+<section id="sec-Consumer-Best-Practices" secid="5.5.4">
+<h3><span class="spec-secid" title="link to this section"><a href="#sec-Consumer-Best-Practices">5.5.4</a></span>Consumer Best Practices</h3>
 <p>To minimize inbox lag and avoid data loss, consumers SHOULD acknowledge processed events as early as safely possible and monitor unread event count and age (if exposed) to detect falling behind.</p>
 <p>Producers MAY expose advisory metadata in event responses, such as:</p>
 <pre data-language="json"><code><span class="token property">"meta"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
@@ -580,15 +645,16 @@ Written in <a href="https://spec-md.com" target="_blank">Spec Markdown</a>.</foo
 <input hidden class="toggle" type="checkbox" id="_toggle_5" /><label for="_toggle_5"></label>
 <ol>
 <li id="_sidebar_5.1"><a href="#sec-Core-Components"><span class="spec-secid">5.1</span>Core Components</a></li>
-<li id="_sidebar_5.2"><a href="#sec-Inbox-Pruning-and-Retention-Policies"><span class="spec-secid">5.2</span>Inbox Pruning and Retention Policies</a></li>
-<li id="_sidebar_5.3"><a href="#sec-Scalability"><span class="spec-secid">5.3</span>Scalability</a></li>
-<li id="_sidebar_5.4"><a href="#sec-Inbox-Lag-Management"><span class="spec-secid">5.4</span>Inbox Lag Management</a>
-<input hidden class="toggle" type="checkbox" id="_toggle_5.4" /><label for="_toggle_5.4"></label>
+<li id="_sidebar_5.2"><a href="#sec-Cost-Analysis"><span class="spec-secid">5.2</span>Cost Analysis</a></li>
+<li id="_sidebar_5.3"><a href="#sec-Inbox-Pruning-and-Retention-Policies"><span class="spec-secid">5.3</span>Inbox Pruning and Retention Policies</a></li>
+<li id="_sidebar_5.4"><a href="#sec-Scalability"><span class="spec-secid">5.4</span>Scalability</a></li>
+<li id="_sidebar_5.5"><a href="#sec-Inbox-Lag-Management"><span class="spec-secid">5.5</span>Inbox Lag Management</a>
+<input hidden class="toggle" type="checkbox" id="_toggle_5.5" /><label for="_toggle_5.5"></label>
 <ol>
-<li id="_sidebar_5.4.1"><a href="#sec-Lag-Detection"><span class="spec-secid">5.4.1</span>Lag Detection</a></li>
-<li id="_sidebar_5.4.2"><a href="#sec-Warning-Thresholds"><span class="spec-secid">5.4.2</span>Warning Thresholds</a></li>
-<li id="_sidebar_5.4.3"><a href="#sec-Eviction-and-Retention-Enforcement"><span class="spec-secid">5.4.3</span>Eviction and Retention Enforcement</a></li>
-<li id="_sidebar_5.4.4"><a href="#sec-Consumer-Best-Practices"><span class="spec-secid">5.4.4</span>Consumer Best Practices</a></li>
+<li id="_sidebar_5.5.1"><a href="#sec-Lag-Detection"><span class="spec-secid">5.5.1</span>Lag Detection</a></li>
+<li id="_sidebar_5.5.2"><a href="#sec-Warning-Thresholds"><span class="spec-secid">5.5.2</span>Warning Thresholds</a></li>
+<li id="_sidebar_5.5.3"><a href="#sec-Eviction-and-Retention-Enforcement"><span class="spec-secid">5.5.3</span>Eviction and Retention Enforcement</a></li>
+<li id="_sidebar_5.5.4"><a href="#sec-Consumer-Best-Practices"><span class="spec-secid">5.5.4</span>Consumer Best Practices</a></li>
 </ol>
 </li>
 </ol>
