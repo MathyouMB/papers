@@ -1,6 +1,6 @@
 # LATCH: A Durable Webhook Alternative for Real-Time Events
 
-<div style="margin-top: -2.0rem">
+<div style="margin-top: -1.0rem">
 <img src="./images/logo-with-title.png" alt="LATCH Logo" width="300px" />
 </div>
 
