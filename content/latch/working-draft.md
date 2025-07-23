@@ -369,6 +369,34 @@ A minimal implementation of LATCH consists of the following:
 
 - **Cursor Tracker:** A lightweight mechanism (e.g., a key-value store) to track the last acknowledged event ID per consumer, used for storage cleanup or analytics.
 
+### Cost Analysis
+
+At large scale, the cost of durable inbox storage becomes significant. Here we analyze storage costs assuming 10 billion events per day routed to partner apps.
+
+**Assumptions:**
+
+- 10 billion events/day, each **5 KB**
+- All events are broadcast to 50,000 inboxes (i.e. full fan-out)
+- Retention window: 3 days (rolling durability)
+- Storage tier: AWS S3 Standard ($0.023/GB/month)
+- Cursor tracking via DynamoDB ($0.25/GB/month)
+- Optional cold archival to AWS Glacier ($0.004/GB/month)
+- Per-day data volume: 10B events × 5 KB = **50 TB/day**
+- 3-day retention (shared storage): 50 TB × 3 = **150 TB total**
+- Metadata overhead: estimated at ~50% of content volume = **75 TB**
+
+**Monthly Costs:**
+
+| Component                      | Volume | Rate            | Monthly Cost              |
+| ------------------------------ | ------ | --------------- | ------------------------- |
+| **Event log (S3)**             | 150 TB | $0.023/GB       | **$3,450**                |
+| **Metadata (EBS or S3)**       | 75 TB  | $0.023–$0.10/GB | **$1,725–$7,500**         |
+| **Cursor tracking (DynamoDB)** | ~1 GB  | $0.25/GB        | **$0.25**                 |
+| **Cold archive (10%)**         | 15 TB  | $0.004/GB       | **$60**                   |
+| **Total**                      | —      | —               | **~$5,200–$11,000/month** |
+
+Even under a high-throughput of **10 billion events/day** with **5 KB payloads**, a well-architected LATCH system using **shared storage and indexed inboxes** achieves total monthly costs of **~$5,000–$11,000**. This centralized infrastructure delivers durable, replayable, and observable delivery to 50,000 consumers—at a fraction of the cost incurred by individual webhook implementations failing independently.
+
 ### Inbox Pruning and Retention Policies
 
 LATCH requires producers to retain events in each inbox until they are acknowledged by the consumer. This guarantees that events are durably available in the face of consumer failures, network partitions, or slow polling intervals. However, indefinite retention is not feasible or desirable, particularly in high-throughput systems or when working with constrained storage.
