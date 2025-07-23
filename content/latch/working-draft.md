@@ -10,7 +10,7 @@ _Last Updated_: July 22, 2025
 
 **Abstract**
 
-LATCH is a protocol for delivering events between systems using a durable, pull-based model that aims to address the integration complexity commonly associated with webhooks. Instead of sending events over HTTP as transient push-based webhooks, LATCH specifies that publishers write events to per-consumer inboxes. Consumers then fetch events from these inboxes using a cursor-based API. This approach significantly reduces integration time and complexity, especially in scenarios where reliable event delivery is critical to the consumer by eliminating the need to implement significant custom infrastructure. This document specifies the LATCH protocol and its reference API.
+LATCH is a protocol for delivering events between systems using a durable pull-based model that aims to address the integration complexity commonly associated with webhooks. Instead of sending events over HTTP as transient push-based webhooks, LATCH specifies that publishers write events to per-consumer inboxes. Consumers then fetch events from these inboxes using a cursor-based API. This approach significantly reduces integration time and complexity, especially in scenarios where reliable event delivery is critical to the consumer by eliminating the need to implement significant custom infrastructure. This document specifies the LATCH protocol and its reference API.
 
 ## Introduction
 
