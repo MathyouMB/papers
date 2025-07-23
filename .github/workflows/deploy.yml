@@ -24,6 +24,9 @@ jobs:
       - name: 🧱 Build papers
         run: ./scripts/build-papers.sh
 
+      - name: 🧾 Add CNAME file
+        run: echo "papers.matthewmacraebovell.com" > ./dist/CNAME
+
       - name: 🚀 Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
