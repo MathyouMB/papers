@@ -16,7 +16,7 @@ find content -name '*.md' | while read file; do
   echo "📄 Processing $file → $out_dir/$html_filename"
 
   mkdir -p "$out_dir"
-  spec-md "$file" > "$out_dir/$html_filename"
+  npx spec-md "$file" > "$out_dir/$html_filename"
 
   src_dir="$(dirname "$file")"
   if [ -d "$src_dir/images" ]; then
