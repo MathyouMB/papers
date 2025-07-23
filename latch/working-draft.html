@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<!-- Built with spec-md https://spec-md.com -->
+<html>
+<head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1"><title>LATCH: A Durable Protocol for Real-Time Event Delivery</title>
+<style>@media (prefers-color-scheme: light){:root{--color-foreground: #333333;--color-background: #ffffff;--color-light-grey: #ccc;--color-grey: #666666;--color-white: #fff;--color-link: #3b5998;--color-subsection-link: var(--color-foreground);--color-toc-link: var(--color-foreground);--color-toc-id: var(--color-link);--color-toggle-border: #bbc;--color-sidebar-background: #f0f0f0;--color-sidebar-viewing-link: #8b9;--color-sidebar-toggle-button: rgba(0, 0, 0, .7);--color-sidebar-shadow-inset: rgba(0, 0, 0, .05);--color-sidebar-shadow: rgba(0, 0, 0, .04);--color-sidebar-large-shadow: rgba(0, 0, 0, .08);--color-pre-background: #fafafa;--color-pre-border: #e9e9e9;--color-code-background: rgba(0, 0, 0, .03);--color-spec-todo: var(--color-grey);--color-spec-example: #fafaff;--color-spec-example-border: #bbbbff;--color-spec-counter-example: #fffafa;--color-spec-counter-border: #ffbbbb;--color-spec-counter-example-link: #98593b;--color-spec-added-border: #396;--color-spec-removed-border: #933;--color-spec-prose: var(--color-grey);--color-spec-quantifier-list: var(--color-link);--color-spec-quantifier-optional: #83238e;--color-spec-condition: #1c7758;--color-spec-param: var(--color-grey);--color-spec-rx: var(--color-foreground);--color-spec-note-border: #f4e925;--color-spec-note-background: #fefef3;--color-spec-note-first-link: #6c6613;--color-source-link: var(--color-light-grey);--color-table-header: #f9f9f9;--color-table-header-border: #d0d0d0;--color-token-inserted: hsla(241, 71%, 34%, .69);--color-token-deleted: hsla(324, 92%, 33%, .74);--color-inserts-background: rgba(0, 200, 30, .08);--color-deletions-background: rgba(200, 0, 0, .08);--selection-background-color: #cacee0;--selection-background-color-link: #f0babe}.selection-link:hover{--selection-background-color: #3b5998}}@media (prefers-color-scheme: dark){:root{--color-foreground: #b6b6b6;--color-background: #262626;--color-light-grey: #373737;--color-grey: #828282;--color-white: rgb(29, 29, 29);--color-link: #89b7da;--color-subsection-link: var(--color-foreground);--color-toc-link: var(--color-foreground);--color-toc-id: var(--color-link);--color-toggle-border: #bbc;--color-sidebar-background: #323232;--color-sidebar-viewing-link: #8b9;--color-sidebar-toggle-button: rgba(220, 220, 220, .7);--color-sidebar-shadow-inset: rgba(0, 0, 0, .05);--color-sidebar-shadow: rgba(0, 0, 0, .04);--color-sidebar-large-shadow: rgba(0, 0, 0, .08);--color-pre-background: #2e2e2e;--color-pre-border: #3a3a3a;--color-code-background: rgba(41, 41, 41, .03);--color-spec-todo: var(--color-grey);--color-spec-example: #2b2b35;--color-spec-example-border: #4d4d6d;--color-spec-counter-example: #322828;--color-spec-counter-border: #664040;--color-spec-counter-example-link: #ff702d;--color-spec-added-border: #396;--color-spec-removed-border: #933;--color-spec-prose: var(--color-grey);--color-spec-quantifier-list: var(--color-link);--color-spec-quantifier-optional: #c689ce;--color-spec-condition: #6fa889;--color-spec-param: var(--color-grey);--color-spec-rx: var(--color-foreground);--color-spec-note-border: #605e39;--color-spec-note-background: #303028;--color-spec-note-first-link: #f0e330;--color-source-link: var(--color-grey);--color-table-header: #373737;--color-table-header-border: #525252;--color-token-inserted: hsla(241, 63%, 70%, .69);--color-token-deleted: hsla(325, 64%, 67%, .74);--color-inserts-background: rgba(0, 200, 30, .08);--color-deletions-background: rgba(200, 0, 0, .08);--selection-background-color: #656565;--selection-background-color-link: #f0babe}.selection-link:hover{--selection-background-color: #829edb}}:root{color:var(--color-foreground);background-color:var(--color-background);font-family:var(--font-family);font-size:15px;line-height:1.5;--mono-font-size: 13px;--indent: 1rem;--list-indent: 1.5rem;--dfn-indent: 0rem;--font-family: Cambria, "Palatino Linotype", Palatino, "Liberation Serif", serif;--font-family-monospace: Consolas, Monaco, "Andale Mono", "Ubuntu Mono", monospace}@media (min-width: 720px){:root{font-size:17px;--mono-font-size: 15px;--indent: 2rem;--list-indent: 2rem;--dfn-indent: 2rem}}body{margin:3rem 0 3rem}article{margin:0 1rem}@media (min-width: 720px){body{margin:6rem auto 3rem;max-width:800px;padding-left:75px;padding-right:clamp(0px,calc((100vw - 800px) * .25),75px)}}.source-link{display:none}@media screen and (min-width: 720px){.source-link{display:block;position:absolute;width:18px;fill:var(--color-source-link);opacity:.3}.source-link:hover{opacity:1}}.outdated-selection-link,.selection-link{position:absolute;display:block;color:var(--color-white);background:var(--selection-background-color);border-radius:4px;font-size:36px;height:23px;line-height:48px;text-align:center;text-decoration:none;width:25px;user-select:none;-moz-user-select:none;-webkit-user-select:none;-ms-user-select:none}.outdated-selection-link:hover,.selection-link:hover{text-decoration:none}.outdated-selection-link:before,.selection-link:before{border:5px solid transparent;content:"";height:0;margin-top:-5px;margin-right:-5px;position:absolute;right:1px;top:50%;width:0}@media (max-width: 719px){.outdated-selection-link:before,.selection-link:before{border-bottom-color:var(--selection-background-color);border-top:0;right:50%;top:1px}}@media (min-width: 720px){.outdated-selection-link:before,.selection-link:before{border-left-color:var(--selection-background-color);border-right:0;right:1px;top:50%}}.outdated-selection-link{background:var(--selection-background-color-link);font-size:21px;font-weight:800;line-height:27px}.outdated-selection-link:hover:after{content:"This selection content has changed since this link was created.";font:9pt/11pt var(--font-family);position:absolute;display:block;white-space:nowrap;padding:2px 5px 1px;top:-20px;background:black;color:var(--color-white)}a{color:var(--color-link);text-decoration:none}a:hover{text-decoration:underline}img{max-width:100%}dl{margin:1rem 0 1rem var(--dfn-indent)}dd{margin:.25em 0 .5em var(--indent)}dd+dd{margin-top:1rem}dfn,.spec-ref{font-style:italic}dfn>a,.spec-ref>a{color:inherit}h1,h2,h3,h4,h5,h6{font-weight:bold;margin:3em 0 1em;position:relative}@media (min-width: 720px){header>h1{margin:6em 0 3em}}h1{font-size:1.5em;margin-top:5em}h2,h3{font-size:1.25em}h4,h5,h6{font-size:1em}section{padding-top:1rem;margin-top:-1rem}section.subsec>h6{margin-top:2em}section.subsec>h6>a{color:var(--color-subsection-link)}section .spec-secid{margin-right:1ex}@media (min-width: 720px){section .spec-secid{position:absolute;right:100%;text-align:right;white-space:nowrap}}footer{font-size:75%;opacity:.5;text-align:center;margin-top:12rem}.spec-toc{margin:1rem 0 3rem}.spec-toc .title{content:"Contents";display:block;font-weight:bold;margin:5em 0 1em}.spec-toc .spec-secid{margin-right:1ex}.spec-toc ol{list-style:none;padding-left:0;margin-top:0;margin-bottom:0}.spec-toc ol ol{list-style:none;padding-left:2ex;margin-bottom:.25em}.spec-toc li{position:relative;padding:5px 0 0 30px;margin:-5px 0 0 -30px}.spec-toc a{color:var(--color-toc-link)}.spec-toc a:hover{text-decoration:none}.spec-toc a .spec-secid{color:var(--color-toc-id)}.spec-toc a:hover .spec-secid{text-decoration:underline}.spec-toc .toggle{display:none}.spec-toc .toggle+label{cursor:pointer;left:6px;opacity:1;padding:5px 6px 5px 7px;position:absolute;top:6px;transform:rotate(0deg);transition:all .18s ease-in-out}.spec-toc .toggle+label:after{border-color:transparent transparent transparent var(--color-toggle-border);border-style:solid;border-width:6px 0 6px 7px;content:" ";display:block;height:0;width:0}@media (pointer: fine){.spec-toc .toggle+label{left:10px;padding:3px 5px 3px 6px;top:8px}}.spec-toc .toggle:checked+label{transform:rotate(90deg)}@media (hover: hover){.spec-toc li:not(:hover)>.toggle:checked+label{opacity:0}}.spec-toc .toggle:not(:checked)~ol{max-height:0;overflow:hidden;margin:0}.spec-sidebar-toggle{display:none}.spec-sidebar-toggle+label>.spec-sidebar-button{position:fixed;right:0;top:0;padding:10px 15px;font-size:30px;color:var(--color-sidebar-toggle-button);z-index:2;cursor:pointer;user-select:none;-moz-user-select:none;-webkit-user-select:none;-ms-user-select:none}.spec-sidebar-toggle:checked+label:after{content:"";position:fixed;top:0;left:0;width:100vw;height:100vh;z-index:0}.spec-sidebar{display:none;position:fixed;right:0;top:0;width:min(320px,calc(100vw - 48px));font-size:14px;line-height:1.75;overflow-y:scroll;height:100%;padding:0 0 5rem 30px;box-sizing:border-box;background:var(--color-sidebar-background);box-shadow:inset 1px 0 var(--color-sidebar-shadow-inset),-4px 0 8px -2px var(--color-sidebar-shadow);overscroll-behavior:contain}.spec-sidebar{user-select:none;-moz-user-select:none;-webkit-user-select:none;-ms-user-select:none}.spec-sidebar-toggle:checked~.spec-sidebar{display:block}.spec-sidebar .viewing>a:after{color:var(--color-sidebar-viewing-link);content:"\2022";margin-left:1ex}@media (min-width: 1220px){.spec-sidebar-toggle+label{display:none}.spec-sidebar{display:block;box-shadow:inset 1px 0 var(--color-sidebar-shadow-inset),inset 4px 0 8px -2px var(--color-sidebar-large-shadow)!important}body{padding-right:345px}}.spec-note{background:var(--color-spec-note-background);border-left:solid 4px var(--color-spec-note-border);margin:1rem -1rem;min-width:70vw;padding:8px 1rem 12px calc(1rem - 4px);width:-moz-fit-content;width:-webkit-fit-content;width:fit-content}@media (min-width: 720px){.spec-note{min-width:416px}}.spec-note>a:first-child{color:var(--color-spec-note-first-link);display:block;font:italic 11pt/18pt var(--font-family);opacity:.6;user-select:none}.spec-todo{color:var(--color-spec-todo);margin:1em 0 1em 5em;min-height:1em}.spec-todo::before{content:"todo";display:block;float:left;margin-left:-5em;text-transform:uppercase}.spec-index ol{list-style-type:none;margin:0 0 0 var(--indent);padding:0;column-width:210px;column-gap:var(--indent)}.spec-index ol li{width:min-content;white-space:nowrap}pre,code{font-family:var(--font-family-monospace);font-size:var(--mono-font-size);font-weight:inherit}code{background:var(--color-code-background);margin:-2px -1px;padding:3px 3px;white-space:pre-wrap}pre>code{background:none;font-weight:inherit;margin:0;padding:0;white-space:pre}pre{background:var(--color-pre-background);border-left:solid 4px var(--color-pre-border);margin:1rem -1rem;min-width:70vw;padding:12px 1rem 12px calc(1rem - 4px);width:-moz-fit-content;width:-webkit-fit-content;width:fit-content;max-width:calc(100vw - 2rem);overflow-y:auto}@media (min-width: 720px){pre{min-width:40ch}}.spec-example{background:var(--color-spec-example);border-left:solid 4px var(--color-spec-example-border);padding-top:8px}.spec-counter-example{background:var(--color-spec-counter-example);border-left:solid 4px var(--color-spec-counter-border);padding-top:8px}.spec-example>a,.spec-counter-example>a{display:block;font:italic 11pt/18pt var(--font-family);opacity:.6;user-select:none}.spec-counter-example>a{color:var(--color-spec-counter-example-link)}table{border-collapse:collapse}th{background-color:var(--color-table-header)}td,th{border:1px solid var(--color-table-header-border);padding:.4em;vertical-align:baseline}ol,ul{padding-left:var(--list-indent)}li>ol,li>ul{margin-top:.25em;margin-bottom:.5em}li+li{margin-top:.25em}li.task{list-style-type:none;position:relative}li.task>input:first-child{margin-left:0;position:absolute;transform:translateX(calc(-100% - 1ch))}ins{background-color:var(--color-inserts-background);text-decoration:none}del{background-color:var(--color-deletions-background)}.spec-added,.spec-removed{border-left:4px solid;margin-left:-18px;padding-left:14px}.spec-added{border-color:var(--color-spec-added-border)}.spec-removed{border-color:var(--color-spec-removed-border);text-decoration:line-through}.spec-keyword{font-weight:bold}.spec-string{font-family:var(--font-family-monospace);font-size:85%;white-space:pre}var{font-style:italic}*[data-name]{transition:.15s background ease-out;border-radius:2px;padding:0 3px;margin:0 -3px}.spec-semantic,.spec-algo{margin:1rem 0 1rem var(--dfn-indent)}.spec-semantic>.spec-nt::after,.spec-algo>.spec-call:first-child::after{content:":";font-style:normal;font-weight:bold;margin-left:1ex}.spec-semantic ol,.spec-semantic ol ol ol ol,.spec-algo ol,.spec-algo ol ol ol ol{list-style-type:decimal}.spec-semantic ol ol,.spec-semantic ol ol ol ol ol,.spec-algo ol ol,.spec-algo ol ol ol ol ol{list-style-type:lower-alpha}.spec-semantic ol ol ol,.spec-semantic ol ol ol ol ol ol,.spec-algo ol ol ol,.spec-algo ol ol ol ol ol ol{list-style-type:lower-roman}.spec-call>a{color:inherit}.spec-production{margin:1rem 0 1rem var(--dfn-indent)}.spec-production>.spec-nt::after{content:":";font-style:normal;font-weight:bold;margin:0 1ex}.spec-semantic.d2>.spec-nt::after,.spec-production.d2>.spec-nt::after{content:"::"}.spec-semantic.d3>.spec-nt::after,.spec-production.d3>.spec-nt::after{content:":::"}.spec-production>.spec-rhs{line-height:1.1;margin:.25em 0 .5em calc(2 * var(--indent));text-indent:calc(-1 * var(--indent))}.spec-semantic>.spec-rhs{display:inline-block;text-indent:calc(-1 * var(--indent));margin-left:calc(1ex + var(--indent))}.spec-rhs>*{text-indent:0}.spec-oneof{display:inline}.spec-oneof::before{content:"one of";font-style:normal;font-weight:bold}.spec-oneof-grid{max-width:calc(100vw - 2rem);overflow:auto;margin:-1ex -1rem;padding:1ex 1rem}.spec-oneof-grid>table{margin-left:var(--indent)}.spec-oneof .spec-rhs{border:none;margin:0;padding:0 0 0 1rem;vertical-align:baseline;white-space:pre}.spec-oneof .spec-rhs:first-child{padding:0}.spec-rhs .spec-constrained:not(:first-child),.spec-rhs .spec-quantified:not(:first-child),.spec-rhs .spec-nt:not(:first-child),.spec-rhs .spec-t:not(:first-child),.spec-rhs .spec-rx:not(:first-child),.spec-rhs .spec-prose:not(:first-child),.spec-rhs .spec-empty:not(:first-child),.spec-rhs .spec-lookahead:not(:first-child){margin-left:1ex;display:inline-block}.spec-condition{font-size:85%}.spec-condition::before{content:"[if "}.spec-condition.not::before{content:"[if not "}.spec-condition::after{content:"]"}.spec-empty,.spec-prose{color:var(--color-spec-prose)}.spec-nt{font-style:italic}.spec-nt>a{color:inherit}.spec-quantifiers,.spec-params{font-size:65%;font-style:normal;vertical-align:sub}.spec-quantifier.list{color:var(--color-spec-quantifier-list)}.spec-quantifier.optional{color:var(--color-spec-quantifier-optional)}.spec-params,.spec-condition{color:var(--color-spec-condition)}.spec-params::before{content:"["}.spec-params::after{content:"]"}.spec-quantifier:not(:last-child)::after,.spec-param:not(:last-child)::after{color:var(--color-spec-param);content:", "}.spec-param.conditional::before{content:"?"}.spec-param.negated::before{content:"!"}.spec-t,.spec-rx{color:var(--color-spec-rx);font-family:var(--font-family-monospace);font-weight:bold}.spec-butnot::before{color:var(--color-grey);content:"but not";font-family:var(--font-family);font-weight:normal;margin-right:1ex}.spec-butnot>*:not(:first-child)::before{color:var(--color-grey);content:"or";font-family:var(--font-family);font-weight:normal;margin-right:1ex}.spec-rhs .spec-oneof::before,.spec-rhs .spec-butnot::before{margin-left:1ex}.spec-lookahead>*{margin:0!important}.spec-lookahead>*:not(:first-child)::before{color:var(--color-grey);content:", ";font-family:var(--font-family);font-style:normal;font-weight:normal}.spec-lookahead::before{color:var(--color-grey);content:"[lookahead = ";font-family:var(--font-family);font-style:normal;font-weight:normal}.spec-lookahead.not::before{content:"[lookahead \2260  "}.spec-lookahead.set::before{content:"[lookahead \2208  {";margin-right:0}.spec-lookahead.set.not::before{content:"[lookahead \2209  {"}.spec-lookahead.ntset::before{content:"[lookahead \2208  ";margin-right:0}.spec-lookahead.ntset.not::before{content:"[lookahead \2209  "}.spec-lookahead::after{color:var(--color-grey);content:"]"}.spec-lookahead.set::after{content:"}]"}code[class*=language-],pre[class*=language-]{color:var(--color-prism-foreground);background:none;text-shadow:0 1px var(--color-prism-text-shadow);font-family:var(--font-family-monospace);font-size:1em;text-align:left;white-space:pre;word-spacing:normal;word-break:normal;word-wrap:normal;line-height:1.5;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-hyphens:none;-moz-hyphens:none;-ms-hyphens:none;hyphens:none}pre[class*=language-]::-moz-selection,pre[class*=language-] ::-moz-selection,code[class*=language-]::-moz-selection,code[class*=language-] ::-moz-selection{text-shadow:none;background:var(--color-prism-background)}pre[class*=language-]::selection,pre[class*=language-] ::selection,code[class*=language-]::selection,code[class*=language-] ::selection{text-shadow:none;background:var(--color-prism-background)}@media print{code[class*=language-],pre[class*=language-]{text-shadow:none}}pre[class*=language-]{padding:1em;margin:.5em 0;overflow:auto}:not(pre)>code[class*=language-],pre[class*=language-]{background:var(--color-prism-block-background)}:not(pre)>code[class*=language-]{padding:.1em;border-radius:.3em;white-space:normal}.token.atrule,.token.attr-value,.token.keyword,.token.property,.token.selector,.token.attr-name,.token.builtin,.token.entity,.token.url,.token.inserted{color:var(--color-token-inserted);background:none}.token.tag,.token.boolean,.token.number,.token.string,.token.char,.token.constant,.token.symbol,.token.regex,.token.important,.token.variable,.token.function,.token.class-name,.token.deleted{color:var(--color-token-deleted)}.token.comment,.token.prolog,.token.doctype,.token.cdata,.token.description{color:inherit;opacity:.3}.token.punctuation{color:inherit;opacity:.5}.token.operator,.token.namespace{color:inherit;opacity:.7}</style>
+<script>(function(){var r,a=[];document.addEventListener("readystatechange",function(){document.readyState==="interactive"&&u()});function u(){var n=document.querySelector('label[for="spec-sidebar-toggle"]');n.addEventListener("scroll",o),n.addEventListener("touchmove",o);function o(d){d.preventDefault()}for(var t=document.getElementsByTagName("section"),e=0;e<t.length;e++)t[e].getAttribute("secid")&&a.push(t[e]);var i=window.scrollY,c=!1;window.addEventListener("scroll",function(d){i=window.scrollY,c||(c=!0,window.requestAnimationFrame(function(){s(i),c=!1}))})}function s(n){for(var o=n+document.documentElement.clientHeight/4,t,e=a.length-1;e>=0;e--)if(a[e].offsetTop<o){t=a[e];break}var i=t&&t.getAttribute("secid");i!==r&&(r&&l(r,!1),i&&l(i,!0),r=i)}function l(n,o){document.getElementById("_sidebar_"+n).className=o?"viewing":"";for(var t=n.split(".");t.length;){var e=document.getElementById("_toggle_"+t.join("."));e&&(e.checked=o),t.pop()}}s(window.scrollY);})();</script>
+<script>(function(){var n=document.getElementsByTagName("style")[0].sheet,e;function u(){e&&(n.deleteRule(e),e=void 0)}function d(t){u(),e=n.insertRule('*[data-name="'+t+'"] { background: rgba(230,215,0,0.12); }',n.cssRules.length)}document.documentElement.addEventListener("mouseover",function(t){var a=t.target.attributes["data-name"];a&&d(a.value)});document.documentElement.addEventListener("mouseout",u);})();</script>
+<script>(function(){var R="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_",o,p,r,g;document.addEventListener("selectionchange",E);window.addEventListener("resize",C);window.addEventListener("hashchange",x);window.addEventListener("load",x);function S(n){y(new URL(n.target.href))}function x(){y(window.location)}function y(n){var e=n.hash.match(/^#sel-([A-Za-z0-9-_]+)$/);if(!!e){g=e[1],r=k(g);var t=r.getBoundingClientRect(),d=Math.max(20,Math.floor((window.innerHeight-t.height)*.4));window.scrollTo(0,window.scrollY+t.y-d);var c=document.getSelection();c.empty(),c.addRange(r),C()}}function E(n){var e=document.getSelection();if(e.isCollapsed)o&&(o.parentNode.removeChild(o),o=null);else{var t=e.getRangeAt(0);(!r||t.compareBoundaryPoints(Range.START_TO_START,r)!==0||t.compareBoundaryPoints(Range.END_TO_END,r)!==0)&&(r=t,g=B(r),C())}}function C(){if(!!r){p||(p=document.getElementsByTagName("article")[0]),o||(o=document.createElement("a"),document.body.appendChild(o)),o.href="#sel-"+g,o.onclick=S,o.className=r.isOutdated?"outdated-selection-link":"selection-link",o.innerText=r.isOutdated?"!":"\u201F";var n=window.innerWidth<720,e=r.getBoundingClientRect();if(n)o.style.left=Math.floor(e.x+e.width/2+window.scrollX-13)+"px",o.style.top=Math.floor(e.bottom+window.scrollY+10)+"px";else{var t=p.getBoundingClientRect().x;o.style.left=Math.floor(t+window.scrollX-37)+"px",o.style.top=Math.floor(e.y+window.scrollY-3)+"px"}}}function B(n){var e="",t=N(n.startContainer),d=N(n.endContainer),c=M(t,d);return l(c),l(t.slice(c.length).concat(n.startOffset)),l(d.slice(c.length).concat(n.endOffset)),i(L(n.toString())),e;function i(a){do e+=R[a&31|(a>31?32:0)],a>>=5;while(a>0)}function l(a){i(a.length);for(var h=0;h<a.length;h++)i(a[h])}}function k(n){for(var e=new Array(64),t=0;t<64;t++)e[R.charCodeAt(t)]=t;var d=0,c=m(),i=m(),l=m(),a=w(),h=i.pop(),P=O(c.concat(i)),T=l.pop(),A=O(c.concat(l)),u=document.createRange();return u.setStart(P,h),u.setEnd(A,T),u.isOutdated=a!==void 0&&a!==L(u.toString()),u;function w(){for(var s=0,v=0;d<n.length;){var f=e[n.charCodeAt(d++)];if(s|=(f&31)<<v,v+=5,f<32)return s}}function m(){var s=w();if(s!=null){for(var v=new Array(s),f=0;f<s;f++)v[f]=w();return v}}}function N(n){for(var e=[];n!=document.body;){var t=n.parentNode;e.push(Array.prototype.indexOf.call(t.childNodes,n)),n=t}return e.reverse()}function O(n){for(var e=document.body,t=0;t<n.length&&e;t++)e=e.childNodes[n[t]];return e}function M(n,e){for(var t=0;t<n.length&&t<e.length&&n[t]===e[t];)t++;return n.slice(0,t)}function L(n){for(var e=2166136261,t=0;t<n.length;++t)e^=n.charCodeAt(t),e+=(e<<1)+(e<<4)+(e<<7)+(e<<8)+(e<<24);return(e>>15^e)&32767}})();</script>
+</head>
+<body><article>
+<header>
+<h1>LATCH: A Durable Protocol for Real-Time Event Delivery</h1>
+<section id="intro">
+<div style="margin-top: -2.0rem">
+<img src="./images/logo-with-title.png" alt="LATCH Logo" width="300px" />
+</div><p><em>By: <a href="https://matthewmacraebovell.com/">Matthew MacRae-Bovell</a></em></p>
+<p><em>Last Updated</em>: July 22, 2025</p>
+<section id="sec-Abstract" class="subsec">
+<h6><a href="#sec-Abstract" title="link to this subsection">Abstract</a></h6>
+<p>LATCH is a protocol for delivering events between systems using a durable, pull-based model. Instead of sending events over HTTP as transient push-based webhooks, LATCH specifies that publishers write events to per-consumer inboxes. Consumers then fetch events from these inboxes using a cursor-based API. This approach significantly reduces integration time and complexity, especially in scenarios where reliable event delivery is critical to the consumer by eliminating the need to implement significant custom infrastructure. This document specifies the LATCH protocol and its reference API.</p>
+</section>
+</section>
+<nav class="spec-toc">
+<div class="title">Contents</div>
+<ol>
+<li><a href="#sec-Introduction"><span class="spec-secid">1</span>Introduction</a></li>
+<li><a href="#sec-Background"><span class="spec-secid">2</span>Background</a><ol>
+<li><a href="#sec-Webhooks-Lack-Standardization"><span class="spec-secid">2.1</span>Webhooks Lack Standardization</a></li>
+<li><a href="#sec-Webhook-Use-Cases"><span class="spec-secid">2.2</span>Webhook Use Cases</a></li>
+<li><a href="#sec-The-Need-for-a-New-Model"><span class="spec-secid">2.3</span>The Need for a New Model</a></li>
+</ol>
+</li>
+<li><a href="#sec-Protocol-Specification"><span class="spec-secid">3</span>Protocol Specification</a><ol>
+<li><a href="#sec-Terminology"><span class="spec-secid">3.1</span>Terminology</a></li>
+<li><a href="#sec-Event-Delivery-Model"><span class="spec-secid">3.2</span>Event Delivery Model</a></li>
+<li><a href="#sec-Event-Ordering"><span class="spec-secid">3.3</span>Event Ordering</a></li>
+<li><a href="#sec-Cursor-Semantics"><span class="spec-secid">3.4</span>Cursor Semantics</a></li>
+<li><a href="#sec-Protocol-Flow"><span class="spec-secid">3.5</span>Protocol Flow</a></li>
+<li><a href="#sec-HTTP-Endpoints"><span class="spec-secid">3.6</span>HTTP Endpoints</a><ol>
+<li><a href="#sec-Producer-Endpoints"><span class="spec-secid">3.6.1</span>Producer Endpoints</a><ol>
+<li><a href="#sec-GET-inboxes-consumer_id-events-after-cursor-"><span class="spec-secid">3.6.1.1</span>GET /inboxes/{consumer_id}/events?after={cursor}</a></li>
+<li><a href="#sec-POST-inboxes-consumer_id-acknowledge"><span class="spec-secid">3.6.1.2</span>POST /inboxes/{consumer_id}/acknowledge</a></li>
+</ol>
+</li>
+<li><a href="#sec-Consumer-Endpoints"><span class="spec-secid">3.6.2</span>Consumer Endpoints</a><ol>
+<li><a href="#sec-POST-inbox-status"><span class="spec-secid">3.6.2.1</span>POST /inbox-status</a></li>
+</ol>
+</li>
+</ol>
+</li>
+<li><a href="#sec-Authentication-and-Security"><span class="spec-secid">3.7</span>Authentication and Security</a></li>
+<li><a href="#sec-Versioning"><span class="spec-secid">3.8</span>Versioning</a></li>
+</ol>
+</li>
+<li><a href="#sec-Discussion"><span class="spec-secid">4</span>Discussion</a><ol>
+<li><a href="#sec-Benefits"><span class="spec-secid">4.1</span>Benefits</a><ol>
+<li><a href="#sec-Durability-and-Reliability"><span class="spec-secid">4.1.1</span>Durability and Reliability</a></li>
+<li><a href="#sec-Consumer-Simplicity"><span class="spec-secid">4.1.2</span>Consumer Simplicity</a></li>
+<li><a href="#sec-Observability-and-Debuggability"><span class="spec-secid">4.1.3</span>Observability and Debuggability</a></li>
+<li><a href="#sec-Better-Developer-Experience"><span class="spec-secid">4.1.4</span>Better Developer Experience</a></li>
+</ol>
+</li>
+<li><a href="#sec-Drawbacks-and-Limitations"><span class="spec-secid">4.2</span>Drawbacks and Limitations</a><ol>
+<li><a href="#sec-Producer-Complexity"><span class="spec-secid">4.2.1</span>Producer Complexity</a></li>
+<li><a href="#sec-Polling-Latency"><span class="spec-secid">4.2.2</span>Polling Latency</a></li>
+<li><a href="#sec-Storage-and-Retention-Costs"><span class="spec-secid">4.2.3</span>Storage and Retention Costs</a></li>
+<li><a href="#sec-Lack-of-Real-Time-Push"><span class="spec-secid">4.2.4</span>Lack of Real-Time Push</a></li>
+</ol>
+</li>
+<li><a href="#sec-LATCH-vs-Webhooks"><span class="spec-secid">4.3</span>LATCH vs. Webhooks</a></li>
+<li><a href="#sec-Recommended-Use-Cases"><span class="spec-secid">4.4</span>Recommended Use Cases</a></li>
+<li><a href="#sec-Notify-Hints-vs-Long-Polling"><span class="spec-secid">4.5</span>Notify Hints vs. Long Polling</a><ol>
+<li><a href="#sec-Limitations-of-Notify-Webhooks"><span class="spec-secid">4.5.1</span>Limitations of Notify Webhooks</a></li>
+<li><a href="#sec-Advantages-of-Long-Polling"><span class="spec-secid">4.5.2</span>Advantages of Long Polling</a></li>
+<li><a href="#sec-Hybrid-Strategy"><span class="spec-secid">4.5.3</span>Hybrid Strategy</a></li>
+</ol>
+</li>
+<li><a href="#sec-Migration-Considerations"><span class="spec-secid">4.6</span>Migration Considerations</a></li>
+</ol>
+</li>
+<li><a href="#sec-Architecture-and-Implementation"><span class="spec-secid">5</span>Architecture and Implementation</a><ol>
+<li><a href="#sec-Core-Components"><span class="spec-secid">5.1</span>Core Components</a></li>
+<li><a href="#sec-Inbox-Pruning-and-Retention-Policies"><span class="spec-secid">5.2</span>Inbox Pruning and Retention Policies</a></li>
+<li><a href="#sec-Scalability"><span class="spec-secid">5.3</span>Scalability</a></li>
+<li><a href="#sec-Inbox-Lag-Management"><span class="spec-secid">5.4</span>Inbox Lag Management</a><ol>
+<li><a href="#sec-Lag-Detection"><span class="spec-secid">5.4.1</span>Lag Detection</a></li>
+<li><a href="#sec-Warning-Thresholds"><span class="spec-secid">5.4.2</span>Warning Thresholds</a></li>
+<li><a href="#sec-Eviction-and-Retention-Enforcement"><span class="spec-secid">5.4.3</span>Eviction and Retention Enforcement</a></li>
+<li><a href="#sec-Consumer-Best-Practices"><span class="spec-secid">5.4.4</span>Consumer Best Practices</a></li>
+</ol>
+</li>
+</ol>
+</li>
+<li><a href="#sec-Acknowledgments"><span class="spec-secid">6</span>Acknowledgments</a></li>
+</ol>
+</nav>
+</header>
+<section id="sec-Introduction" secid="1">
+<h1><span class="spec-secid" title="link to this section"><a href="#sec-Introduction">1</a></span>Introduction</h1>
+<p>Webhooks are a widely adopted mechanism for delivering notifications between systems. In most webhook models, a producer issues an HTTP request to a consumer-provided endpoint whenever a relevant event occurs. This approach is easy to implement and works well for simple use cases, such as posting a message to a Slack channel when a deployment completes or being alerted when a new feedback submission is received.</p>
+<p>However, for production-grade integrations, particularly those involving mission-critical workflows, this model introduces significant operational challenges. Ensuring reliable delivery of webhook events typically requires consumers to implement and maintain a considerable amount of infrastructure:</p>
+<ul>
+<li>A publicly accessible web server or endpoint</li>
+<li>Request validation and schema handling</li>
+<li>Idempotency mechanisms to avoid duplicate processing</li>
+<li>Queues and buffers to decouple receipt from downstream handling</li>
+<li>Dead-letter handling for persistent failures</li>
+<li>Persistent storage for tracking delivery attempts</li>
+<li>Retry logic with exponential backoff and monitoring</li>
+</ul>
+<p>This overhead is often duplicated across consumers, increasing complexity and introducing opportunities for failure. In practice, it limits integration success: smaller partners may be unable to support the necessary infrastructure, while others deploy brittle systems that silently drop data under load or fail to recover from transient errors.</p>
+<p>For the publisher, this results in fewer successful integrations, increased support costs, slower partner onboarding, and potentially negatively impacted trust with their own customers. Lowering the operational burden on consumers has direct benefits: broader adoption, faster time-to-value for partners, and a more robust ecosystem of integrations.</p>
+<p>This paper introduces LATCH (Log-based Asynchronous Transport for CHange events), a pull-based protocol that rethinks the delivery model for webhook-like integrations. Rather than pushing events to consumer endpoints, producers append them to per-consumer inboxes. Consumers retrieve these events using a cursor-based polling interface. This model enables durable delivery, reduces complexity for consumers, and improves debuggability and fault tolerance.</p>
+<p>In this paper we will describe the LATCH protocol, its architecture, and how it addresses the limitations of traditional webhook systems.</p>
+</section>
+<section id="sec-Background" secid="2">
+<h1><span class="spec-secid" title="link to this section"><a href="#sec-Background">2</a></span>Background</h1>
+<p>The rise of APIs and event-driven systems over the last two decades has made event notification a critical part of modern system architecture. Webhooks emerged as a popular solution in the early 2010s, largely because of their simplicity: a producer issues an HTTP POST to a consumer-provided URL when something changes. This minimal, push-based pattern required no polling, no shared schema, and no persistent connection, making it easy to adopt and implement across diverse platforms.</p>
+<section id="sec-Webhooks-Lack-Standardization" secid="2.1">
+<h2><span class="spec-secid" title="link to this section"><a href="#sec-Webhooks-Lack-Standardization">2.1</a></span>Webhooks Lack Standardization</h2>
+<p>Despite their ubiquity, webhook systems lack a standardized specification. Unlike protocols such as OAuth 2.0, OpenID Connect, or even RSS, webhooks have no formal schema, handshake, retry contract, or discovery mechanism. This absence of standardization has led to a wide spectrum of implementations, each with their own delivery guarantees, payload formats, and failure semantics.</p>
+<p>In practice, most webhook providers do not guarantee delivery, ordering, or idempotency. Instead, they rely on best-effort push semantics over HTTP and offload the responsibility for correctness to the consumer. Providing guaranteed one time delivery, ordering, and idempotency is difficult for the publisher because it requires them to implement complex retry logic, deduplication, and failure recovery given the consumer may not be reachable or may fail to process the event correctly.</p>
+<p>To achieve production-grade reliability, consumers are typically required to implement retry handling with exponential backoff and timeout tolerance, deduplication logic based on event identifiers or hashes, failure recovery workflows such as dead-letter queues or manual replays, and security enforcement mechanisms like HMAC validation and replay protection. These concerns must be addressed in nearly every integration, yet each team reinvents the same scaffolding independently. The lack of shared conventions results in increased integration costs and a higher likelihood of subtle delivery bugs.</p>
+<p>In addition to protocol inconsistencies, webhook payload design varies significantly across providers. Some systems deliver extremely sparse messages, often containing nothing more than a resource identifier and an event type. This minimalist approach, exemplified by some Stripe and Square events, forces consumers to perform follow-up API calls to retrieve full context. While this reduces publisher-side bandwidth, it increases overall system latency, introduces coupling between the webhook and the source API, and creates additional failure surfaces.</p>
+<p>Conversely, some providers attempt to include the full context of the event inline. GitHub, for example, often delivers webhook payloads that contain the entire resource tree associated with the change. While this improves autonomy and reduces the need for follow-up calls, it significantly increases payload size. Large, verbose payloads result in greater bandwidth consumption, higher delivery latency, and increased risk of consumer-side timeouts.</p>
+<p>Neither sparse nor bloated payloads represents a well-optimized delivery model. And without formal guidance, developers are left to navigate this space through trial and error.</p>
+<p>These limitations make clear that while webhook delivery is widely adopted, it is not mature. The lack of standardization, weak delivery guarantees, inconsistent payload strategies, and poor observability contribute to a fragile and fragmented ecosystem.</p>
+</section>
+<section id="sec-Webhook-Use-Cases" secid="2.2">
+<h2><span class="spec-secid" title="link to this section"><a href="#sec-Webhook-Use-Cases">2.2</a></span>Webhook Use Cases</h2>
+<p>Current webhook infrastructure treats all deliveries as transient and fire-and-forget. This model imposes a uniform fragility across use cases, requiring consumers to compensate for missed messages, implement idempotency, and manage delivery durability independently.</p>
+<p>Although a good percentage of webhook use cases are simple non-critical notifications, there is a growing trend towards using webhooks as entry points for critical business logic and data synchronization. These use cases require stronger delivery guarantees, ordering, and replayability than traditional webhook systems provide today.</p>
+<p>Even lightweight non-critical notifications, such as triggering visual indicators or posting status messages to team communication channels, still suffer from invisible failure modes. Events may be silently dropped due to transient downtime, DNS misconfiguration, or upstream throttling, and the lack of delivery introspection makes root cause analysis exceedingly difficult. The operational simplicity of these use cases does not negate their brittleness.</p>
+<p>The limitations of push-based webhooks become more severe in the context of business-critical workflows. Increasingly, webhook deliveries serve as authoritative triggers for operations such as provisioning access, initiating fulfillment after a successful transaction, or launching automated deployment processes. Webhooks are also widely used for data synchronization across service boundaries, where consistency and ordering are paramount. Systems may rely on webhooks to mirror user profile data between services, update external analytics pipelines, or keep third-party integrations in sync with the source of truth. These synchronization patterns are extremely sensitive to delivery guarantees: a single missing or duplicated event can result in data corruption, stale state, or downstream inconsistency. Traditional webhooks are ill-equipped to handle such requirements, as push delivery offers no inherent guarantees around ordering, visibility, or recoverability. Consumers often resort to full resynchronization or redundant polling of upstream APIs to compensate for webhook unreliability.</p>
+</section>
+<section id="sec-The-Need-for-a-New-Model" secid="2.3">
+<h2><span class="spec-secid" title="link to this section"><a href="#sec-The-Need-for-a-New-Model">2.3</a></span>The Need for a New Model</h2>
+<p>The limitations of webhook systems highlight the need for a more robust, standardized approach to event delivery. A protocol that provides durable, reliable, and observable event transport can significantly reduce the operational burden on consumers while improving integration success rates.</p>
+<p>By shifting responsibility for delivery guarantees to the producer, such a model allows consumers to interact with event streams more safely and predictably. It simplifies integration, reduces the likelihood of silent failure, and makes systems easier to debug and operate. Crucially, relocating delivery infrastructure to the platform itself leads to more reliable integrations, benefiting not only developers but also the platform provider. When integration success is a first-class concern of the platform, the support burden shifts accordingly. Fewer developers encounter delivery issues, fewer bugs are caused by missed or duplicated events, and fewer support cycles are spent troubleshooting fragile, consumer-managed webhook implementations. This improves the overall developer experience while lowering the cost of maintaining a partner ecosystem.</p>
+</section>
+</section>
+<section id="sec-Protocol-Specification" secid="3">
+<h1><span class="spec-secid" title="link to this section"><a href="#sec-Protocol-Specification">3</a></span>Protocol Specification</h1>
+<p>This section defines the LATCH protocol, including its core concepts, required endpoints, and message semantics. LATCH specifies how producers write events to consumer-specific inboxes, and how consumers poll and acknowledge those events using a cursor-based API.</p>
+<section id="sec-Terminology" secid="3.1">
+<h2><span class="spec-secid" title="link to this section"><a href="#sec-Terminology">3.1</a></span>Terminology</h2>
+<ul>
+<li><strong>Producer</strong>: The system or service that generates events.</li>
+<li><strong>Consumer</strong>: The system or client that retrieves events using the LATCH protocol.</li>
+<li><strong>Inbox</strong>: A durable log of events scoped to a specific consumer, maintained by the producer.</li>
+<li><strong>Event</strong>: A discrete, immutable data record representing a change in the producer&rsquo;s system.</li>
+<li><strong>Cursor</strong>: An opaque identifier marking a consumer&rsquo;s read position in their inbox.</li>
+<li><strong>Acknowledgment</strong>: A consumer signal that all events up to a specific cursor have been successfully processed.</li>
+</ul>
+</section>
+<section id="sec-Event-Delivery-Model" secid="3.2">
+<h2><span class="spec-secid" title="link to this section"><a href="#sec-Event-Delivery-Model">3.2</a></span>Event Delivery Model</h2>
+<p>In LATCH, producers do not push events directly to consumer endpoints. Instead, they append events to a per-consumer inbox, which acts as a durable, append-only log. Consumers retrieve events by explicitly requesting new messages, either periodically (polling), during startup, or in response to lightweight &ldquo;notify&rdquo; hints delivered via webhook. This makes LATCH a pull-based protocol that supports event-driven retrieval without requiring long-lived HTTP infrastructure on the consumer side.</p>
+<p>This model enables:</p>
+<ul>
+<li><strong>Durable delivery</strong>: Events are not lost due to transient network failures or consumer downtime.</li>
+<li><strong>Backpressure tolerance</strong>: Consumers request messages at their own pace.</li>
+<li><strong>Resumability</strong>: Consumers can resume from the last known good cursor after failure.</li>
+<li><strong>Simplified integration</strong>: Consumers do not need to implement retry queues or handle webhook-specific delivery semantics.</li>
+</ul>
+</section>
+<section id="sec-Event-Ordering" secid="3.3">
+<h2><span class="spec-secid" title="link to this section"><a href="#sec-Event-Ordering">3.3</a></span>Event Ordering</h2>
+<p>Events in an inbox are returned in the order they were written. This ordering must be stable and deterministic per inbox. Reordering, duplication, or omission of events is not permitted unless explicitly allowed by the configuration.</p>
+</section>
+<section id="sec-Cursor-Semantics" secid="3.4">
+<h2><span class="spec-secid" title="link to this section"><a href="#sec-Cursor-Semantics">3.4</a></span>Cursor Semantics</h2>
+<p>A cursor is an opaque identifier that represents a position in the inbox. Producers must treat cursors as immutable and unique per event. Consumers must not guess or construct cursors. They should only use those returned by the server.</p>
+</section>
+<section id="sec-Protocol-Flow" secid="3.5">
+<h2><span class="spec-secid" title="link to this section"><a href="#sec-Protocol-Flow">3.5</a></span>Protocol Flow</h2>
+<pre><code>     +------------+                               +---------------+
+     |            |--(A)-- Fetch Events ---------&gt;|               |
+     |  Consumer  |                               |    Producer   |
+     |            |&lt;-(B)-- List of Events --------|               |
+     |            |                               +---------------+
+     |            |
+     |            |--(C)-- Acknowledge Cursor ---&gt;|               |
+     |            |                               |               |
+     |            |&lt;-(D)---- 200 OK --------------|               |
+     +------------+                               +---------------+
+</code></pre>
+<section id="sec-Protocol-Flow.Figure-1-Abstract-LATCH-Protocol-Flow" class="subsec">
+<h6><a href="#sec-Protocol-Flow.Figure-1-Abstract-LATCH-Protocol-Flow" title="link to this subsection">Figure 1: Abstract LATCH Protocol Flow</a></h6>
+<ul>
+<li><strong>(A)</strong> The consumer requests events from its inbox, either during boot, periodically, or after receiving a notify hint.</li>
+<li><strong>(B)</strong> The producer returns a list of events starting after the provided cursor.</li>
+<li><strong>(C)</strong> After processing, the consumer optionally acknowledges the last successfully handled event.</li>
+<li><strong>(D)</strong> The producer updates the cursor or retention metadata and returns a success response.</li>
+</ul>
+</section>
+</section>
+<section id="sec-HTTP-Endpoints" secid="3.6">
+<h2><span class="spec-secid" title="link to this section"><a href="#sec-HTTP-Endpoints">3.6</a></span>HTTP Endpoints</h2>
+<p>All LATCH implementations must expose the following endpoints:</p>
+<section id="sec-Producer-Endpoints" secid="3.6.1">
+<h3><span class="spec-secid" title="link to this section"><a href="#sec-Producer-Endpoints">3.6.1</a></span>Producer Endpoints</h3>
+<p>The producer must implement the following endpoints to support the LATCH protocol:</p>
+<section id="sec-GET-inboxes-consumer_id-events-after-cursor-" secid="3.6.1.1">
+<h4><span class="spec-secid" title="link to this section"><a href="#sec-GET-inboxes-consumer_id-events-after-cursor-">3.6.1.1</a></span>GET /inboxes/{consumer_id}/events?after={cursor}</h4>
+<p>Retrieves a list of events after the given cursor (or from the beginning if omitted).</p>
+<p>Producers SHOULD implement rate limiting on this endpoint to prevent excessive polling. Consumers are encouraged to adopt a hybrid model, requesting events either on boot, on a fixed schedule, or in response to <code>/inbox-status</code> notifications, rather than continuously polling in tight loops. This reduces unnecessary load and latency while preserving the benefits of on-demand delivery.</p>
+<section id="sec-GET-inboxes-consumer_id-events-after-cursor-.Query-Parameters-" class="subsec">
+<h6><a href="#sec-GET-inboxes-consumer_id-events-after-cursor-.Query-Parameters-" title="link to this subsection">Query Parameters:</a></h6>
+<ul>
+<li><code>after</code> (optional): The ID of the last seen event. If omitted, returns events from the beginning of the inbox.</li>
+<li><code>limit</code> (optional): The maximum number of events to return. If omitted, a default limit should be applied.</li>
+</ul>
+</section>
+<section id="sec-GET-inboxes-consumer_id-events-after-cursor-.Request-Example-" class="subsec">
+<h6><a href="#sec-GET-inboxes-consumer_id-events-after-cursor-.Request-Example-" title="link to this subsection">Request Example:</a></h6>
+<pre data-language="http"><code>GET /inboxes/example-consumer-id/events?after=event_1024
+</code></pre>
+</section>
+<section id="sec-GET-inboxes-consumer_id-events-after-cursor-.Response-Example-" class="subsec">
+<h6><a href="#sec-GET-inboxes-consumer_id-events-after-cursor-.Response-Example-" title="link to this subsection">Response Example:</a></h6>
+<pre data-language="json"><code><span class="token punctuation">{</span>
+  <span class="token property">"events"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+    <span class="token punctuation">{</span> <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"event_1025"</span><span class="token punctuation">,</span> <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"user.created"</span><span class="token punctuation">,</span> <span class="token property">"payload"</span><span class="token operator">:</span> <span class="token punctuation">{</span> ... <span class="token punctuation">}</span> <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">{</span> <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"event_1026"</span><span class="token punctuation">,</span> <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"invoice.paid"</span><span class="token punctuation">,</span>  <span class="token property">"payload"</span><span class="token operator">:</span> <span class="token punctuation">{</span> ... <span class="token punctuation">}</span> <span class="token punctuation">}</span>
+  <span class="token punctuation">]</span><span class="token punctuation">,</span>
+  <span class="token property">"next_cursor"</span><span class="token operator">:</span> <span class="token string">"event_1026"</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p>If no events are returned, <code>next_cursor</code> should equal the after cursor (or be null if the inbox is empty).</p>
+<p>The consumer should use <code>next_cursor</code> in the next request to resume polling.</p>
+<p>Cursor values are opaque and must not be constructed or modified by clients.</p>
+</section>
+</section>
+<section id="sec-POST-inboxes-consumer_id-acknowledge" secid="3.6.1.2">
+<h4><span class="spec-secid" title="link to this section"><a href="#sec-POST-inboxes-consumer_id-acknowledge">3.6.1.2</a></span>POST /inboxes/{consumer_id}/acknowledge</h4>
+<p>Acknowledges the successful processing of events up to a specific cursor.</p>
+<section id="sec-POST-inboxes-consumer_id-acknowledge.Request-Body-" class="subsec">
+<h6><a href="#sec-POST-inboxes-consumer_id-acknowledge.Request-Body-" title="link to this subsection">Request Body:</a></h6>
+<pre data-language="json"><code><span class="token punctuation">{</span>
+  <span class="token property">"cursor"</span><span class="token operator">:</span> <span class="token string">"event_1024"</span>
+<span class="token punctuation">}</span>
+</code></pre>
+</section>
+<section id="sec-POST-inboxes-consumer_id-acknowledge.Response-Example-" class="subsec">
+<h6><a href="#sec-POST-inboxes-consumer_id-acknowledge.Response-Example-" title="link to this subsection">Response Example:</a></h6>
+<pre data-language="json"><code><span class="token punctuation">{</span>
+  <span class="token property">"status"</span><span class="token operator">:</span> <span class="token string">"ok"</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p>If a consumer crashes, they can simply start again from their last seen event. No missed data. No retries. No dropped webhooks.</p>
+</section>
+</section>
+</section>
+<section id="sec-Consumer-Endpoints" secid="3.6.2">
+<h3><span class="spec-secid" title="link to this section"><a href="#sec-Consumer-Endpoints">3.6.2</a></span>Consumer Endpoints</h3>
+<p>The consumer must implement the following endpoints to support the LATCH protocol:</p>
+<section id="sec-POST-inbox-status" secid="3.6.2.1">
+<h4><span class="spec-secid" title="link to this section"><a href="#sec-POST-inbox-status">3.6.2.1</a></span>POST /inbox-status</h4>
+<p>While LATCH is fundamentally a pull-based protocol, producers MAY optionally send inbox status notifications to registered consumer endpoints when new events are available or the consumer appears idle. These notifications are not required for correctness, but serve as a hint to reduce polling latency and improve responsiveness.</p>
+<p>These messages resemble traditional webhooks in format but are advisory only, no delivery guarantees or retries are required, and they carry no event data. They exist purely as optimization hints and must not be relied upon for correctness.</p>
+<pre data-language="http"><code>POST /inbox-status
+</code></pre>
+<pre data-language="json"><code><span class="token punctuation">{</span>
+  <span class="token property">"consumer_id"</span><span class="token operator">:</span> <span class="token string">"example-consumer-id"</span><span class="token punctuation">,</span>
+  <span class="token property">"status"</span><span class="token operator">:</span> <span class="token string">"new_events_available"</span><span class="token punctuation">,</span>
+  <span class="token property">"inbox"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token property">"unread_count"</span><span class="token operator">:</span> <span class="token number">3</span><span class="token punctuation">,</span>
+    <span class="token property">"oldest_event_id"</span><span class="token operator">:</span> <span class="token string">"event_2048"</span><span class="token punctuation">,</span>
+    <span class="token property">"latest_event_id"</span><span class="token operator">:</span> <span class="token string">"event_2050"</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token property">"timestamp"</span><span class="token operator">:</span> <span class="token string">"2025-07-22T18:45:00Z"</span>
+<span class="token punctuation">}</span>
+</code></pre>
+</section>
+</section>
+</section>
+<section id="sec-Authentication-and-Security" secid="3.7">
+<h2><span class="spec-secid" title="link to this section"><a href="#sec-Authentication-and-Security">3.7</a></span>Authentication and Security</h2>
+<p>LATCH does not prescribe a specific authentication mechanism, but all requests to inbox endpoints should be authenticated.</p>
+</section>
+<section id="sec-Versioning" secid="3.8">
+<h2><span class="spec-secid" title="link to this section"><a href="#sec-Versioning">3.8</a></span>Versioning</h2>
+<p>LATCH does not mandate a specific versioning scheme, but producers and consumers should implement versioning strategies to ensure backward compatibility.</p>
+</section>
+</section>
+<section id="sec-Discussion" secid="4">
+<h1><span class="spec-secid" title="link to this section"><a href="#sec-Discussion">4</a></span>Discussion</h1>
+<p>The LATCH protocol represents a shift in how event-driven systems communicate, particularly when delivery guarantees and integration simplicity are paramount. While it builds upon ideas seen in log-based systems like Kafka and pull-based feeds like RSS, its explicit per-consumer delivery semantics and protocol-level cursor tracking distinguish it as a robust alternative to traditional webhooks.</p>
+<section id="sec-Benefits" secid="4.1">
+<h2><span class="spec-secid" title="link to this section"><a href="#sec-Benefits">4.1</a></span>Benefits</h2>
+<section id="sec-Durability-and-Reliability" secid="4.1.1">
+<h3><span class="spec-secid" title="link to this section"><a href="#sec-Durability-and-Reliability">4.1.1</a></span>Durability and Reliability</h3>
+<p>LATCH guarantees that events remain available to the consumer until explicitly acknowledged. This eliminates a common class of silent failures in webhook-based systems, where network partitions, DNS failures, or misconfigured endpoints can result in data loss with no opportunity for recovery. Because events are durably stored by the producer, reliability no longer depends on the transient success of an HTTP request.</p>
+</section>
+<section id="sec-Consumer-Simplicity" secid="4.1.2">
+<h3><span class="spec-secid" title="link to this section"><a href="#sec-Consumer-Simplicity">4.1.2</a></span>Consumer Simplicity</h3>
+<p>By shifting delivery responsibility to the producer, LATCH minimizes infrastructure requirements for the consumer. Consumers no longer need to manage background retry queues or implement dead-letter handling. Instead, they issue authenticated fetch requests and track a cursor.</p>
+</section>
+<section id="sec-Observability-and-Debuggability" secid="4.1.3">
+<h3><span class="spec-secid" title="link to this section"><a href="#sec-Observability-and-Debuggability">4.1.3</a></span>Observability and Debuggability</h3>
+<p>Traditional webhook delivery often lacks transparency. Developers struggle to determine whether a webhook fired, was received, or was dropped. LATCH improves this by making delivery state explicit. Because the producer owns the inbox and serves events via a cursor, it can expose metrics like event lag, unread count, or inbox backlog. This visibility enables better monitoring, debugging, and alerting throughout the integration lifecycle.</p>
+</section>
+<section id="sec-Better-Developer-Experience" secid="4.1.4">
+<h3><span class="spec-secid" title="link to this section"><a href="#sec-Better-Developer-Experience">4.1.4</a></span>Better Developer Experience</h3>
+<p>Integration for consumers becomes a matter of fetching events and processing them in order. This not only reduces time-to-integration but improves correctness by removing ad hoc error handling and edge-case logic from consumer codebases.</p>
+<p>Improved developer experience leads to faster onboarding, fewer bugs, and more successful integrations. By reducing the operational burden on consumers, LATCH enables the consumer to focus on building value rather than maintaining complex delivery infrastructure.</p>
+</section>
+</section>
+<section id="sec-Drawbacks-and-Limitations" secid="4.2">
+<h2><span class="spec-secid" title="link to this section"><a href="#sec-Drawbacks-and-Limitations">4.2</a></span>Drawbacks and Limitations</h2>
+<p>The simplicity gained by the consumer is offset by complexity added to the producer. LATCH requires producers to implement durable storage, per-consumer inboxes, cursor tracking, and endpoint authentication. These concerns are nontrivial, especially in high-volume, multi-tenant systems. While tooling and infrastructure can mitigate this, producers must be prepared to invest in delivery infrastructure as a first-class responsibility.</p>
+<section id="sec-Producer-Complexity" secid="4.2.1">
+<h3><span class="spec-secid" title="link to this section"><a href="#sec-Producer-Complexity">4.2.1</a></span>Producer Complexity</h3>
+<p>The simplicity gained by the consumer is offset by complexity added to the producer. LATCH requires producers to implement durable storage, per-consumer inboxes, cursor tracking, and endpoint authentication. These concerns are nontrivial, especially in high-volume, multi-tenant systems. While tooling and infrastructure can mitigate this, producers must be prepared to invest in delivery infrastructure as a first-class responsibility.</p>
+</section>
+<section id="sec-Polling-Latency" secid="4.2.2">
+<h3><span class="spec-secid" title="link to this section"><a href="#sec-Polling-Latency">4.2.2</a></span>Polling Latency</h3>
+<p>LATCH trades immediacy for control. In push-based systems, the producer initiates delivery as soon as an event occurs. In LATCH, the consumer dictates when to fetch, which introduces a variable delay between event emission and processing. This can be mitigated with short polling intervals or proactive notify hints, but cannot fully match the low-latency delivery of webhooks in ideal network conditions.</p>
+</section>
+<section id="sec-Storage-and-Retention-Costs" secid="4.2.3">
+<h3><span class="spec-secid" title="link to this section"><a href="#sec-Storage-and-Retention-Costs">4.2.3</a></span>Storage and Retention Costs</h3>
+<p>LATCH requires producers to retain events until they are explicitly acknowledged. This increases storage usage compared to fire-and-forget models. Retention policies, tiered storage, or archiving can alleviate the burden, but high-throughput systems must carefully monitor disk usage and pruning policies. Cost becomes a shared trade-off in exchange for stronger delivery semantics.</p>
+</section>
+<section id="sec-Lack-of-Real-Time-Push" secid="4.2.4">
+<h3><span class="spec-secid" title="link to this section"><a href="#sec-Lack-of-Real-Time-Push">4.2.4</a></span>Lack of Real-Time Push</h3>
+<p>LATCH is a pull-based protocol. While optional notify hints can bridge the gap and reduce latency, they are not guaranteed to arrive or retry. Consumers requiring real-time responsiveness (e.g., for live UI updates) may need to supplement LATCH with push-based overlays or websocket channels. For many back-office and system-to-system use cases, however, near-real-time delivery is sufficient.</p>
+</section>
+</section>
+<section id="sec-LATCH-vs-Webhooks" secid="4.3">
+<h2><span class="spec-secid" title="link to this section"><a href="#sec-LATCH-vs-Webhooks">4.3</a></span>LATCH vs. Webhooks</h2>
+<p>LATCH offers significant improvements in reliability, observability, and consumer simplicity by shifting responsibility for event delivery from the consumer to the producer. However, this shift introduces its own trade-offs.</p>
+<p>LATCH also increases complexity for the producer. It must implement durable inboxes, serve paginated event streams, and manage cursor tracking. In contrast, webhook delivery requires only a fire-and-forget HTTP request. For small systems or trusted internal consumers, the additional overhead of LATCH may not be justified.</p>
+<p>The most immediate cost is storage. Unlike webhooks, which transmit ephemeral notifications and discard them after delivery (successful or not), LATCH requires the producer to persist events until they are explicitly acknowledged. This increases infrastructure demands, particularly for high-throughput systems or when consumers are slow to process events. Producers must account for disk usage, retention policies, and pruning strategies to ensure scalability over time.</p>
+<p>Additionally, latency characteristics differ. Webhooks can deliver events as soon as they are emitted, resulting in near-instantaneous delivery, assuming the consumer is online and reachable. LATCH relies on polling, which introduces a delay between when an event is written and when it is observed by the consumer. While this delay can be minimized with short polling intervals or long-polling techniques, it is unlikely to match the immediacy of push-based systems under ideal conditions.</p>
+<p>LATCH was designed to address many of the reliability and integration challenges of traditional webhooks. However, like any architectural shift, adopting LATCH introduces its own trade-offs. This section compares the two models across several dimensions.</p>
+<table>
+<thead>
+<tr>
+<th>Dimension</th>
+<th>Webhooks</th>
+<th>LATCH</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Delivery Model</strong></td>
+<td>Push-based via HTTP</td>
+<td>Pull-based via cursor-based HTTP polling</td>
+</tr>
+<tr>
+<td><strong>Consumer Simplicity</strong></td>
+<td>Requires HTTP server, retries, deduping, etc.</td>
+<td>Minimal client logic; polling loop with cursor</td>
+</tr>
+<tr>
+<td><strong>Durability</strong></td>
+<td>Requires queues or retries to avoid data loss</td>
+<td>Events are durably persisted until acknowledged</td>
+</tr>
+<tr>
+<td><strong>Error Recovery</strong></td>
+<td>Must reimplement retry + DLQ semantics</td>
+<td>Consumers re-poll from known cursor</td>
+</tr>
+<tr>
+<td><strong>Delivery Latency</strong></td>
+<td>Near-instantaneous (when working)</td>
+<td>Polling interval determines freshness</td>
+</tr>
+<tr>
+<td><strong>Producer Complexity</strong></td>
+<td>Simple, fire and forget</td>
+<td>Must persist and serve event logs</td>
+</tr>
+<tr>
+<td><strong>Consumer Visibility</strong></td>
+<td>Difficult to debug (e.g. silent failures)</td>
+<td>Easy to observe consumer lag and inbox contents</td>
+</tr>
+<tr>
+<td><strong>Integration Cost</strong></td>
+<td>High, especially for smaller or third-party teams</td>
+<td>Low, can integrate with a simple loop and cursor</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="sec-Recommended-Use-Cases" secid="4.4">
+<h2><span class="spec-secid" title="link to this section"><a href="#sec-Recommended-Use-Cases">4.4</a></span>Recommended Use Cases</h2>
+<p>LATCH is particularly well-suited for systems where durability, introspectability, and integration simplicity take precedence over raw delivery speed. These characteristics make it an ideal fit for a wide range of modern integration scenarios that struggle with the limitations of traditional webhook infrastructure.</p>
+<p>One of the most compelling applications for LATCH is in developer platforms that support a large and diverse ecosystem of third-party consumers. In such environments, expecting each integration to independently manage HTTP endpoints, request validation, retry logic, deduplication, and failure recovery creates substantial friction. These requirements often act as a barrier to entry, especially for smaller teams or external developers who lack the operational capacity to implement resilient infrastructure. As a result, platform providers face slower partner onboarding, inconsistent integration quality, and a growing support burden as developers encounter delivery issues or silent data loss.</p>
+<p>By shifting responsibility for delivery durability to the platform, LATCH reduces this burden and centralizes control over delivery guarantees. This change significantly improves the reliability of integrations across the board. Developers are no longer required to reimplement foundational delivery mechanics, enabling them to focus on application logic rather than infrastructure concerns. For the platform, this translates to fewer failed integrations, reduced support load, and increased developer satisfaction. It also ensures that integration success is treated as a first-class concern of the platform, not an afterthought left to the consumer&rsquo;s discretion or resources.</p>
+<p>Importantly, while LATCH offers compelling advantages in these cases, it is not intended to replace internal messaging systems. For intra-organization communication, especially when low latency, high throughput, or complex routing is required, existing technologies like Apache Kafka, NATS, MQTT, or other message queues are better suited. These systems offer rich features for stream processing, topic-based routing, and backpressure handling, and are more appropriate for internal service meshes, microservice coordination, or real-time event streaming.</p>
+<p>LATCH instead fills a gap between webhook simplicity and message queue robustness: it is ideal for external-facing APIs and partner integrations where the producer must offer reliable delivery, but the consumer cannot be expected to implement or operate a message broker.</p>
+<p>LATCH is not a universal replacement for webhooks, but it is a significantly better default for systems that prioritize reliability, supportability, and developer experience. Its design simplifies integration, improves delivery guarantees, and creates stronger accountability at the platform layer, benefits that compound in environments where integration failure is costly and success is critical.</p>
+</section>
+<section id="sec-Notify-Hints-vs-Long-Polling" secid="4.5">
+<h2><span class="spec-secid" title="link to this section"><a href="#sec-Notify-Hints-vs-Long-Polling">4.5</a></span>Notify Hints vs. Long Polling</h2>
+<p>LATCH allows producers to send lightweight webhook-style notify hints to consumers when new events are available. While these advisory messages can improve responsiveness and reduce average polling delay, they come with meaningful limitations compared to long polling.</p>
+<section id="sec-Limitations-of-Notify-Webhooks" secid="4.5.1">
+<h3><span class="spec-secid" title="link to this section"><a href="#sec-Limitations-of-Notify-Webhooks">4.5.1</a></span>Limitations of Notify Webhooks</h3>
+<p>Notify hints resemble traditional webhooks in format, but they are not guaranteed to be delivered or retried. If the notification is dropped or results in a transient error (e.g., a 500 response), the consumer may miss the opportunity to poll promptly and will rely on its next scheduled polling interval. This introduces a potential latency gap unless fallback polling is in place.</p>
+<p>Moreover, notify hints require consumers to expose a public HTTP endpoint. This reintroduces one of the infrastructure requirements that LATCH was designed to eliminate. It also subjects the consumer to ingress considerations, firewall configuration, and operational complexity that the pull-based model otherwise avoids.</p>
+<p>Finally, even when delivered, webhook notifications offer no guarantees about timeliness. They may be deprioritized by the producer, delayed by queues, or throttled under load. As a result, the worst-case latency remains governed by the consumer&rsquo;s polling interval.</p>
+</section>
+<section id="sec-Advantages-of-Long-Polling" secid="4.5.2">
+<h3><span class="spec-secid" title="link to this section"><a href="#sec-Advantages-of-Long-Polling">4.5.2</a></span>Advantages of Long Polling</h3>
+<p>In contrast, long polling allows consumers to issue a fetch request that remains open until an event is available or a timeout occurs. This technique preserves LATCH&rsquo;s outbound-only model, avoiding the need for the consumer to accept incoming requests.</p>
+<p>Because the consumer is responsible for initiating the connection, long polling guarantees regular checks for new events, even if no notify hints are delivered. It also reduces tail latency: by holding the connection open, the producer can respond immediately when a new event is written, enabling near-real-time delivery without sacrificing reliability or simplicity.</p>
+</section>
+<section id="sec-Hybrid-Strategy" secid="4.5.3">
+<h3><span class="spec-secid" title="link to this section"><a href="#sec-Hybrid-Strategy">4.5.3</a></span>Hybrid Strategy</h3>
+<p>LATCH supports a hybrid strategy that combines scheduled polling (or long polling) with optional notify hints. This pattern ensures baseline delivery guarantees through polling while opportunistically improving responsiveness when producers send hints about new data.</p>
+<p>By treating notify hints as latency optimizers rather than delivery mechanisms, consumers can remain robust to network issues, misfires, or dropped webhooks, preserving the benefits of LATCH&rsquo;s durability while avoiding unnecessary fragility.</p>
+</section>
+</section>
+<section id="sec-Migration-Considerations" secid="4.6">
+<h2><span class="spec-secid" title="link to this section"><a href="#sec-Migration-Considerations">4.6</a></span>Migration Considerations</h2>
+<p>Adopting LATCH does not require an immediate replacement of existing webhook infrastructure. In fact, LATCH is designed to coexist with traditional webhooks, enabling a gradual migration strategy that minimizes disruption to existing consumers.</p>
+<p>Producers MAY support both delivery models in parallel by introducing LATCH endpoints alongside existing webhook registration flows. For example, consumers could opt in to LATCH delivery by registering a polling consumer ID instead of a callback URL. Events can then be delivered to both the traditional webhook pipeline and the LATCH inbox for the same integration.</p>
+<p>Over time, producers can deprecate webhook endpoints or offer incentives for consumers to transition, such as improved reliability, reduced delivery errors, or access to historical event replays only available via LATCH.</p>
+</section>
+</section>
+<section id="sec-Architecture-and-Implementation" secid="5">
+<h1><span class="spec-secid" title="link to this section"><a href="#sec-Architecture-and-Implementation">5</a></span>Architecture and Implementation</h1>
+<p>The LATCH protocol is implementation-agnostic. It specifies the interaction model between producers and consumers but does not mandate any particular storage engine, messaging system, or deployment architecture. This separation of concerns allows LATCH to be adapted to a wide range of environments, from small-scale internal services to large-scale multi-tenant platforms.</p>
+<p>This section describes the architectural patterns and trade-offs involved in implementing LATCH, with a focus on scalability, storage strategies, and delivery guarantees.</p>
+<section id="sec-Core-Components" secid="5.1">
+<h2><span class="spec-secid" title="link to this section"><a href="#sec-Core-Components">5.1</a></span>Core Components</h2>
+<p>A minimal implementation of LATCH consists of the following:</p>
+<ul>
+<li><strong>Inbox Store:</strong> A per-consumer append-only log that holds events in insertion order. Each inbox MUST preserve order and support cursor-based reads.</li>
+<li><strong>API Layer:</strong> A stateless HTTP interface that exposes the required endpoints (<code>GET /events</code>, <code>POST /acknowledge</code>) and handles authentication, authorization, pagination, and rate limiting.</li>
+<li><strong>Event Writer:</strong> The system component that writes events to the appropriate consumer inboxes as changes occur in the producer&rsquo;s system.</li>
+<li><strong>Retention Policy:</strong> Logic for determining how long to store unacknowledged events. Producers MAY retain all events indefinitely, expire old ones, or archive them externally.</li>
+<li><strong>Cursor Tracker:</strong> A lightweight mechanism (e.g., a key-value store) to track the last acknowledged event ID per consumer, used for storage cleanup or analytics.</li>
+</ul>
+</section>
+<section id="sec-Inbox-Pruning-and-Retention-Policies" secid="5.2">
+<h2><span class="spec-secid" title="link to this section"><a href="#sec-Inbox-Pruning-and-Retention-Policies">5.2</a></span>Inbox Pruning and Retention Policies</h2>
+<p>LATCH requires producers to retain events in each inbox until they are acknowledged by the consumer. This guarantees that events are durably available in the face of consumer failures, network partitions, or slow polling intervals. However, indefinite retention is not feasible or desirable, particularly in high-throughput systems or when working with constrained storage.</p>
+<p>Producers MUST implement a retention policy for pruning old or unacknowledged events. The policy should define how long events are kept in an inbox and under what conditions they may be deleted. Implementations MAY support any of the following strategies:</p>
+<ul>
+<li><strong>Time-based expiration</strong>: Retain events for a fixed duration (e.g., 7 days) after insertion, regardless of acknowledgment status.</li>
+<li><strong>Size-based limits</strong>: Cap the number of retained events per inbox or the total disk usage per consumer.</li>
+<li><strong>Acknowledgment-driven pruning</strong>: Immediately remove all events older than the most recent acknowledged cursor.</li>
+<li><strong>Tiered archiving</strong>: Move old events to cold storage (e.g., S3 or Glacier) after a period, allowing rehydration if necessary.</li>
+</ul>
+<p>Each implementation SHOULD clearly document its retention behavior and any guarantees it makes to consumers. For example, a platform may promise that &ldquo;events will be retained for at least 3 days or until acknowledged, whichever is longer.&rdquo; Consumers should be designed to poll and acknowledge frequently enough to avoid losing access to unacknowledged events.</p>
+<p>If a consumer attempts to resume from a cursor that no longer exists due to pruning, the server MUST return an error (e.g., <code>410 Gone</code>) indicating that the cursor is no longer valid.</p>
+<p>Producers MAY expose metadata such as retention windows, cursor expiration hints, or inbox backlog size to help consumers adapt their polling behavior dynamically.</p>
+</section>
+<section id="sec-Scalability" secid="5.3">
+<h2><span class="spec-secid" title="link to this section"><a href="#sec-Scalability">5.3</a></span>Scalability</h2>
+<p>LATCH is horizontally scalable by design. With each inbox is scoped to a specific consumer, reads can be independently sharded across nodes using the <code>consumer_id</code>, and writes can be isolated to dedicated partitions per inbox. Cursor tracking is entirely local to each consumer and requires no global coordination.</p>
+</section>
+<section id="sec-Inbox-Lag-Management" secid="5.4">
+<h2><span class="spec-secid" title="link to this section"><a href="#sec-Inbox-Lag-Management">5.4</a></span>Inbox Lag Management</h2>
+<p>While LATCH enables consumer-paced delivery, this flexibility introduces the risk of consumers falling significantly behind, creating unbounded backlog growth, delayed processing, and potential retention violations. To maintain system health and fairness in multi-tenant environments, producers SHOULD implement policies for detecting and managing inbox lag.</p>
+<section id="sec-Lag-Detection" secid="5.4.1">
+<h3><span class="spec-secid" title="link to this section"><a href="#sec-Lag-Detection">5.4.1</a></span>Lag Detection</h3>
+<p>Lag can be measured using one or more of the following metrics:</p>
+<ul>
+<li><strong>Time lag</strong>: The duration between the oldest unacknowledged event and the current time.</li>
+<li><strong>Message lag</strong>: The number of events that remain unacknowledged.</li>
+<li><strong>Storage lag</strong>: The total disk space consumed by a given inbox.</li>
+</ul>
+<p>Producers MAY expose these metrics per consumer to observability systems, or return them as part of <code>/inboxes/{consumer_id}/events</code> or <code>/inbox-status</code> responses to aid client-side tuning.</p>
+</section>
+<section id="sec-Warning-Thresholds" secid="5.4.2">
+<h3><span class="spec-secid" title="link to this section"><a href="#sec-Warning-Thresholds">5.4.2</a></span>Warning Thresholds</h3>
+<p>Producers SHOULD define thresholds that trigger soft alerts or logs when lag metrics exceed predefined limits. For example, they may warn if a consumer has not acknowledged any events in 24 hours, if an inbox contains more than 10,000 unacknowledged events, or if disk usage for a single inbox exceeds 500 MB. These warnings help operators detect unresponsive or unhealthy consumers before they impact overall system performance or trigger retention enforcement mechanisms.</p>
+</section>
+<section id="sec-Eviction-and-Retention-Enforcement" secid="5.4.3">
+<h3><span class="spec-secid" title="link to this section"><a href="#sec-Eviction-and-Retention-Enforcement">5.4.3</a></span>Eviction and Retention Enforcement</h3>
+<p>If a consumer persistently lags beyond acceptable thresholds, producers MAY take corrective action to preserve system stability and prevent unbounded resource usage. This can include selectively evicting events or enforcing retention boundaries. In such cases, producers may implement soft eviction, where events that exceed the configured retention window are pruned even if unacknowledged. If a consumer attempts to resume from a cursor that references evicted data, the server MUST return a 410 Gone response to indicate that the cursor is no longer valid. Producers SHOULD clearly document these behaviors and provide mechanisms to help consumers recover from eviction scenarios, such as cursor resets, full resynchronization options, or dedicated API endpoints for reinitializing inbox state. These recovery pathways are critical for minimizing disruption and ensuring that lagging consumers can safely resume processing without risking data inconsistency.</p>
+</section>
+<section id="sec-Consumer-Best-Practices" secid="5.4.4">
+<h3><span class="spec-secid" title="link to this section"><a href="#sec-Consumer-Best-Practices">5.4.4</a></span>Consumer Best Practices</h3>
+<p>To minimize inbox lag and avoid data loss, consumers SHOULD acknowledge processed events as early as safely possible and monitor unread event count and age (if exposed) to detect falling behind.</p>
+<p>Producers MAY expose advisory metadata in event responses, such as:</p>
+<pre data-language="json"><code><span class="token property">"meta"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+  <span class="token property">"inbox_size"</span><span class="token operator">:</span> <span class="token number">1021</span><span class="token punctuation">,</span>
+  <span class="token property">"oldest_event_age"</span><span class="token operator">:</span> <span class="token string">"2h35m"</span><span class="token punctuation">,</span>
+  <span class="token property">"retention_window"</span><span class="token operator">:</span> <span class="token string">"72h"</span>
+<span class="token punctuation">}</span>
+
+</code></pre>
+<p>This allows consumers to adapt polling intervals, throttle event processing, or trigger operator alerts as needed.</p>
+</section>
+</section>
+</section>
+<section id="sec-Acknowledgments" secid="6">
+<h1><span class="spec-secid" title="link to this section"><a href="#sec-Acknowledgments">6</a></span>Acknowledgments</h1>
+<p>LATCH was inspired by challenges faced in building developer experiences with webhook-based integrations during my time on the <a href="https://www.shopify.com/">Shopify</a> <a href="https://www.shopify.com/flow">Flow</a> Platform Team and <a href="https://www.jobber.com/">Jobber</a> <a href="https://developer.getjobber.com/landing">Platform Experience</a> Team. </p>
+</section>
+</article>
+<footer>
+Written in <a href="https://spec-md.com" target="_blank">Spec Markdown</a>.</footer>
+<input hidden class="spec-sidebar-toggle" type="checkbox" id="spec-sidebar-toggle" aria-hidden /><label for="spec-sidebar-toggle" aria-hidden><div class="spec-sidebar-button">&#x2630;</div></label>
+<div class="spec-sidebar" aria-hidden>
+<div class="spec-toc">
+<div class="title"><a href="#">LATCH: A Durable Protocol for Real-Time Event Delivery</a></div>
+<ol><li id="_sidebar_1"><a href="#sec-Introduction"><span class="spec-secid">1</span>Introduction</a></li>
+<li id="_sidebar_2"><a href="#sec-Background"><span class="spec-secid">2</span>Background</a>
+<input hidden class="toggle" type="checkbox" id="_toggle_2" /><label for="_toggle_2"></label>
+<ol>
+<li id="_sidebar_2.1"><a href="#sec-Webhooks-Lack-Standardization"><span class="spec-secid">2.1</span>Webhooks Lack Standardization</a></li>
+<li id="_sidebar_2.2"><a href="#sec-Webhook-Use-Cases"><span class="spec-secid">2.2</span>Webhook Use Cases</a></li>
+<li id="_sidebar_2.3"><a href="#sec-The-Need-for-a-New-Model"><span class="spec-secid">2.3</span>The Need for a New Model</a></li>
+</ol>
+</li>
+<li id="_sidebar_3"><a href="#sec-Protocol-Specification"><span class="spec-secid">3</span>Protocol Specification</a>
+<input hidden class="toggle" type="checkbox" id="_toggle_3" /><label for="_toggle_3"></label>
+<ol>
+<li id="_sidebar_3.1"><a href="#sec-Terminology"><span class="spec-secid">3.1</span>Terminology</a></li>
+<li id="_sidebar_3.2"><a href="#sec-Event-Delivery-Model"><span class="spec-secid">3.2</span>Event Delivery Model</a></li>
+<li id="_sidebar_3.3"><a href="#sec-Event-Ordering"><span class="spec-secid">3.3</span>Event Ordering</a></li>
+<li id="_sidebar_3.4"><a href="#sec-Cursor-Semantics"><span class="spec-secid">3.4</span>Cursor Semantics</a></li>
+<li id="_sidebar_3.5"><a href="#sec-Protocol-Flow"><span class="spec-secid">3.5</span>Protocol Flow</a></li>
+<li id="_sidebar_3.6"><a href="#sec-HTTP-Endpoints"><span class="spec-secid">3.6</span>HTTP Endpoints</a>
+<input hidden class="toggle" type="checkbox" id="_toggle_3.6" /><label for="_toggle_3.6"></label>
+<ol>
+<li id="_sidebar_3.6.1"><a href="#sec-Producer-Endpoints"><span class="spec-secid">3.6.1</span>Producer Endpoints</a>
+<input hidden class="toggle" type="checkbox" id="_toggle_3.6.1" /><label for="_toggle_3.6.1"></label>
+<ol>
+<li id="_sidebar_3.6.1.1"><a href="#sec-GET-inboxes-consumer_id-events-after-cursor-"><span class="spec-secid">3.6.1.1</span>GET /inboxes/{consumer_id}/events?after={cursor}</a></li>
+<li id="_sidebar_3.6.1.2"><a href="#sec-POST-inboxes-consumer_id-acknowledge"><span class="spec-secid">3.6.1.2</span>POST /inboxes/{consumer_id}/acknowledge</a></li>
+</ol>
+</li>
+<li id="_sidebar_3.6.2"><a href="#sec-Consumer-Endpoints"><span class="spec-secid">3.6.2</span>Consumer Endpoints</a>
+<input hidden class="toggle" type="checkbox" id="_toggle_3.6.2" /><label for="_toggle_3.6.2"></label>
+<ol>
+<li id="_sidebar_3.6.2.1"><a href="#sec-POST-inbox-status"><span class="spec-secid">3.6.2.1</span>POST /inbox-status</a></li>
+</ol>
+</li>
+</ol>
+</li>
+<li id="_sidebar_3.7"><a href="#sec-Authentication-and-Security"><span class="spec-secid">3.7</span>Authentication and Security</a></li>
+<li id="_sidebar_3.8"><a href="#sec-Versioning"><span class="spec-secid">3.8</span>Versioning</a></li>
+</ol>
+</li>
+<li id="_sidebar_4"><a href="#sec-Discussion"><span class="spec-secid">4</span>Discussion</a>
+<input hidden class="toggle" type="checkbox" id="_toggle_4" /><label for="_toggle_4"></label>
+<ol>
+<li id="_sidebar_4.1"><a href="#sec-Benefits"><span class="spec-secid">4.1</span>Benefits</a>
+<input hidden class="toggle" type="checkbox" id="_toggle_4.1" /><label for="_toggle_4.1"></label>
+<ol>
+<li id="_sidebar_4.1.1"><a href="#sec-Durability-and-Reliability"><span class="spec-secid">4.1.1</span>Durability and Reliability</a></li>
+<li id="_sidebar_4.1.2"><a href="#sec-Consumer-Simplicity"><span class="spec-secid">4.1.2</span>Consumer Simplicity</a></li>
+<li id="_sidebar_4.1.3"><a href="#sec-Observability-and-Debuggability"><span class="spec-secid">4.1.3</span>Observability and Debuggability</a></li>
+<li id="_sidebar_4.1.4"><a href="#sec-Better-Developer-Experience"><span class="spec-secid">4.1.4</span>Better Developer Experience</a></li>
+</ol>
+</li>
+<li id="_sidebar_4.2"><a href="#sec-Drawbacks-and-Limitations"><span class="spec-secid">4.2</span>Drawbacks and Limitations</a>
+<input hidden class="toggle" type="checkbox" id="_toggle_4.2" /><label for="_toggle_4.2"></label>
+<ol>
+<li id="_sidebar_4.2.1"><a href="#sec-Producer-Complexity"><span class="spec-secid">4.2.1</span>Producer Complexity</a></li>
+<li id="_sidebar_4.2.2"><a href="#sec-Polling-Latency"><span class="spec-secid">4.2.2</span>Polling Latency</a></li>
+<li id="_sidebar_4.2.3"><a href="#sec-Storage-and-Retention-Costs"><span class="spec-secid">4.2.3</span>Storage and Retention Costs</a></li>
+<li id="_sidebar_4.2.4"><a href="#sec-Lack-of-Real-Time-Push"><span class="spec-secid">4.2.4</span>Lack of Real-Time Push</a></li>
+</ol>
+</li>
+<li id="_sidebar_4.3"><a href="#sec-LATCH-vs-Webhooks"><span class="spec-secid">4.3</span>LATCH vs. Webhooks</a></li>
+<li id="_sidebar_4.4"><a href="#sec-Recommended-Use-Cases"><span class="spec-secid">4.4</span>Recommended Use Cases</a></li>
+<li id="_sidebar_4.5"><a href="#sec-Notify-Hints-vs-Long-Polling"><span class="spec-secid">4.5</span>Notify Hints vs. Long Polling</a>
+<input hidden class="toggle" type="checkbox" id="_toggle_4.5" /><label for="_toggle_4.5"></label>
+<ol>
+<li id="_sidebar_4.5.1"><a href="#sec-Limitations-of-Notify-Webhooks"><span class="spec-secid">4.5.1</span>Limitations of Notify Webhooks</a></li>
+<li id="_sidebar_4.5.2"><a href="#sec-Advantages-of-Long-Polling"><span class="spec-secid">4.5.2</span>Advantages of Long Polling</a></li>
+<li id="_sidebar_4.5.3"><a href="#sec-Hybrid-Strategy"><span class="spec-secid">4.5.3</span>Hybrid Strategy</a></li>
+</ol>
+</li>
+<li id="_sidebar_4.6"><a href="#sec-Migration-Considerations"><span class="spec-secid">4.6</span>Migration Considerations</a></li>
+</ol>
+</li>
+<li id="_sidebar_5"><a href="#sec-Architecture-and-Implementation"><span class="spec-secid">5</span>Architecture and Implementation</a>
+<input hidden class="toggle" type="checkbox" id="_toggle_5" /><label for="_toggle_5"></label>
+<ol>
+<li id="_sidebar_5.1"><a href="#sec-Core-Components"><span class="spec-secid">5.1</span>Core Components</a></li>
+<li id="_sidebar_5.2"><a href="#sec-Inbox-Pruning-and-Retention-Policies"><span class="spec-secid">5.2</span>Inbox Pruning and Retention Policies</a></li>
+<li id="_sidebar_5.3"><a href="#sec-Scalability"><span class="spec-secid">5.3</span>Scalability</a></li>
+<li id="_sidebar_5.4"><a href="#sec-Inbox-Lag-Management"><span class="spec-secid">5.4</span>Inbox Lag Management</a>
+<input hidden class="toggle" type="checkbox" id="_toggle_5.4" /><label for="_toggle_5.4"></label>
+<ol>
+<li id="_sidebar_5.4.1"><a href="#sec-Lag-Detection"><span class="spec-secid">5.4.1</span>Lag Detection</a></li>
+<li id="_sidebar_5.4.2"><a href="#sec-Warning-Thresholds"><span class="spec-secid">5.4.2</span>Warning Thresholds</a></li>
+<li id="_sidebar_5.4.3"><a href="#sec-Eviction-and-Retention-Enforcement"><span class="spec-secid">5.4.3</span>Eviction and Retention Enforcement</a></li>
+<li id="_sidebar_5.4.4"><a href="#sec-Consumer-Best-Practices"><span class="spec-secid">5.4.4</span>Consumer Best Practices</a></li>
+</ol>
+</li>
+</ol>
+</li>
+<li id="_sidebar_6"><a href="#sec-Acknowledgments"><span class="spec-secid">6</span>Acknowledgments</a></li>
+</ol>
+</div>
+</div>
+</body>
+</html>
